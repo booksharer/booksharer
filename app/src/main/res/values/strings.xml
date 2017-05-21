@@ -6,5 +6,8 @@
     <string name="more">查看更多</string>
     <string name="bookName">书名</string>
     <string name="locateFailed">定位失败</string>
+    <string name="post">发布</string>
+    <string name="booksharer">BookSharer</string>
+    <string name="neighborhood">附近书圈</string>
 
 </resources>

@@ -5,60 +5,40 @@
               android:background="@color/white"
               android:orientation="vertical">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:background="@color/colorPrimary">
 
         <TextView
             android:id="@+id/city"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="left|center_vertical"
             android:drawablePadding="10dp"
-            android:gravity="center_vertical"
             android:padding="5dp"
             android:text="@string/locateFailed"
             android:textColor="@color/white"/>
 
         <TextView
-            android:layout_width="10dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:padding="11dp"
+            android:text="@string/booksharer"
+            android:textStyle="bold"
             android:textSize="20sp"/>
 
-        <TextView
-            android:id="@+id/search"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/search_shape"
-            android:drawableRight="@drawable/ic_home_search"
-            android:drawablePadding="5dp"
-            android:paddingBottom="7dp"
-            android:paddingLeft="22dp"
-            android:paddingRight="14dp"
-            android:paddingTop="7dp"
-            android:text=""
-            android:textColor="@color/gray"/>
 
-        <FrameLayout
+        <ImageView
+            android:id="@+id/locate"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent">
-
-
-            <ImageView
-                android:id="@+id/index_home_tip"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:clickable="true"
-                android:src="@drawable/ico_home_locate"/>
-        </FrameLayout>
-    </LinearLayout>
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:src="@drawable/ico_locate"/>
+    </FrameLayout>
 
 
     <FrameLayout
@@ -90,32 +70,30 @@
 
 
                 <View
-                    android:layout_width="match_parent"
-                    android:layout_height="18dp"
-                    style="@style/Blank"/>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="18dp"
                     style="@style/Blank"
-                    />
+                    android:layout_width="match_parent"
+                    android:layout_height="12dp"/>
+
+
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/normal_bg_color"/>
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="3dp"
-                    android:text="猜你喜欢"
-                    android:textSize="15sp"/>
+                    android:text="@string/neighborhood"
+                    android:textSize="18sp"/>
 
                 <include layout="@layout/fragment_book_community_content"/>
 
                 <View
-                    android:layout_width="match_parent"
-                    android:layout_height="18dp"
                     style="@style/Blank"
+                    android:layout_width="match_parent"
+                    android:layout_height="12dp"
                     />
             </LinearLayout>
         </com.booksharer.view.VerticalScrollView>

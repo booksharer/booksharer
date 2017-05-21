@@ -91,7 +91,7 @@
             android:enabled="true"
             android:process=":remote">
         </service>
-
+        <service android:name=".service.LocationService" ></service>
         <activity android:name=".view.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

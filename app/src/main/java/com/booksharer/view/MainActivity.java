@@ -1,5 +1,6 @@
 package com.booksharer.view;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTabHost;
@@ -12,16 +13,11 @@ import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
-
-import com.baidu.location.BDLocation;
-import com.baidu.location.BDLocationListener;
-import com.baidu.location.LocationClient;
-import com.baidu.location.LocationClientOption;
+import android.widget.Toast;
 import com.booksharer.R;
+import com.booksharer.service.LocationService;
 
 public class MainActivity extends AppCompatActivity {
-
-    public LocationClient mLocationClient;
 
     // 定义一个布局
     private LayoutInflater layoutInflater;
@@ -42,24 +38,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+//启动定位服务
+        Intent startIntent = new Intent(this, LocationService.class);
+        startService(startIntent); // 启动服务
 
-        mLocationClient = new LocationClient(getApplicationContext());
-        mLocationClient.registerLocationListener(new MyLocationListener());
 
         initView();
 
-        requestLocation();
-    }
 
-    private void requestLocation() {
-        initLocation();
-        mLocationClient.start();
-    }
-
-    private void initLocation() {
-        LocationClientOption option = new LocationClientOption();
-        option.setIsNeedAddress(true);
-        mLocationClient.setLocOption(option);
     }
 
 
@@ -67,16 +53,16 @@ public class MainActivity extends AppCompatActivity {
      * 初始化组件
      */
     private void initView() {
+
         // 实例化布局对象
         layoutInflater = LayoutInflater.from(this);
 
         // 实例化TabHost对象，得到TabHost
         mTabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
-        mTabHost.setup(this, getSupportFragmentManager(), R.id.realTabContent);
+        mTabHost.setup(this, getSupportFragmentManager(), R.id.main_container);
 
         //去分割线
         final TabWidget tabWidget = mTabHost.getTabWidget();
-        //tabWidget.setStripEnabled(false);
         tabWidget.setDividerDrawable(null);
 
 
@@ -89,10 +75,14 @@ public class MainActivity extends AppCompatActivity {
                     .setIndicator(getTabItemView(i));
             // 将Tab按钮添加进Tab选项卡中
             mTabHost.addTab(tabSpec, fragmentArray[i], null);
-//            // 设置Tab按钮的背景
-//            mTabHost.getTabWidget().getChildAt(i).setBackgroundColor(1);
-//                    .setBackgroundResource(R.drawable.main_tab_item_bg);
         }
+
+        findViewById(R.id.tab_post_icon).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this, "发布", Toast.LENGTH_LONG).show();
+            }
+        });
     }  /**
      * 给Tab按钮设置图标和文字
      */
@@ -109,29 +99,4 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private class MyLocationListener implements BDLocationListener {
-
-        @Override
-        public void onReceiveLocation(BDLocation bdLocation) {
-            StringBuilder curremtPosition = new StringBuilder();
-            curremtPosition.append("维度").append(bdLocation.getLatitude())
-                    .append("\n");
-            curremtPosition.append("经度").append(bdLocation.getLongitude())
-                    .append("\n");
-            curremtPosition.append("定位方式");
-            if (bdLocation.getLocType() == BDLocation.TypeGpsLocation){
-                curremtPosition.append("GPS");
-            }else if (bdLocation.getLocType() == BDLocation.TypeNetWorkLocation){
-                curremtPosition.append("网络");
-            }else if (bdLocation.getLocType() == BDLocation.TypeCacheLocation) {
-                curremtPosition.append("缓存");
-            }
-                Log.d("test", curremtPosition.toString()+bdLocation.getAddrStr());
-            SharedPreferences.Editor editor = PreferenceManager
-                    .getDefaultSharedPreferences(MainActivity.this).edit();
-            editor.putString("city", bdLocation.getCity())
-                    .putString("position", bdLocation.getLatitude()+","+bdLocation.getLongitude())
-                    .apply();
-        }
-    }
 }

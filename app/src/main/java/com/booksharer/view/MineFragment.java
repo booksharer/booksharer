@@ -51,11 +51,6 @@ public class MineFragment extends Fragment implements View.OnClickListener {
 
         AppCompatActivity activity = (AppCompatActivity) getActivity();
 
-        Toolbar toolbar = (Toolbar) view.findViewById(R.id.id_toolbar);
-        TextView tv = (TextView) view.findViewById(R.id.toolbar_text);
-        activity.setSupportActionBar(toolbar);
-        toolbar.setTitle("");
-        tv.setText("我的");
 
         //activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

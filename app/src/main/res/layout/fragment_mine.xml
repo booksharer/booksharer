@@ -8,8 +8,6 @@
     android:orientation="vertical"
     tools:ignore="ContentDescription">
 
-    <include layout="@layout/toolbar_title"/>
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -102,7 +100,7 @@
                         android:layout_gravity="center"
                         android:layout_marginLeft="3dp"
                         android:layout_marginRight="16dp"
-                        android:src="@drawable/right"/>
+                        android:src="@drawable/ico_right"/>
                 </LinearLayout>
 
             </LinearLayout>
@@ -249,7 +247,7 @@
                         android:layout_gravity="center"
                         android:layout_marginLeft="3dp"
                         android:layout_marginRight="16dp"
-                        android:src="@drawable/right"/>
+                        android:src="@drawable/ico_right"/>
                 </LinearLayout>
 
             </LinearLayout>
@@ -390,7 +388,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="20dp"
-                    android:src="@drawable/right"/>
+                    android:src="@drawable/ico_right"/>
             </RelativeLayout>
 
             <LinearLayout style="@style/common_horizontal_division_line_style"/>

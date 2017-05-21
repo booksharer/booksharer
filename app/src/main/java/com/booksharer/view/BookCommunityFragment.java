@@ -1,5 +1,6 @@
 package com.booksharer.view;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,21 +21,26 @@ import android.widget.TextView;
 
 //import com.baidu.location.LocationClient;
 
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
 import com.booksharer.R;
+import com.booksharer.service.LocationService;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
-public class BookCommunityFragment extends Fragment implements View.OnClickListener {
+public class BookCommunityFragment extends Fragment{
 
+    public LocationClient mLocationClient;
 
     private ViewPager adViewPager;
     private LinearLayout pagerLayout;
     private List<View> pageViews;
     private ImageView[] imageViews;
-    private ImageView imageView;
     private AdPageAdapter adapter;
     private AtomicInteger atomicInteger = new AtomicInteger(0);
     private boolean isContinue = true;
@@ -44,17 +50,6 @@ public class BookCommunityFragment extends Fragment implements View.OnClickListe
 
     View view;
 
-    private TextView jiudian;
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        //initViewPager();
-        Log.d("test", "HomeFragment onStart");
-
-        // TODO Auto-generated method stub  暂时不能用
-        //checkGPSIsOpen();
-    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -67,29 +62,21 @@ public class BookCommunityFragment extends Fragment implements View.OnClickListe
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_book_community, container, false);
         initViewPager();
+
         //获取数据并显示
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         TextView city = (TextView)view.findViewById(R.id.city);
         city.setText(preferences.getString("city", "定位失败"));
 
-        Log.d("test", "HomeFragment onCreateView");
-        ImageView gps = (ImageView) view.findViewById(R.id.index_home_tip);
-        gps.setOnClickListener(this);
 
-        /*搜索TextView*/
-        TextView search_area = (TextView) view.findViewById(R.id.search);
-        search_area.setOnClickListener(this);
 
-//        View flight_policy = view.findViewById(R.id.list_one);
-//        flight_policy.setOnClickListener(this);
-//
-//        View query_policy = view.findViewById(R.id.query_policy);
-//        query_policy.setOnClickListener(this);
-//
-//        View scenic_policy = view.findViewById(R.id.scenic_policy);
-//        scenic_policy.setOnClickListener(this);
-//
-//        view.findViewById(R.id.flight_delay_policy).setOnClickListener(this);
+        view.findViewById(R.id.locate).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent startIntent = new Intent(getActivity(), LocationService.class);
+                getActivity().startService(startIntent); // 启动服务
+            }
+        });
 //
 //        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 //        Log.d("life", "刷新view");
@@ -99,63 +86,6 @@ public class BookCommunityFragment extends Fragment implements View.OnClickListe
 
         return view;
     }
-
-    @Override
-    public void onClick(View v) {
-//        switch (v.getId()) {
-//            case R.id.home_choose_area:
-//                Intent intent = new Intent(getActivity(), ChooseAreaActivity.class);
-//                startActivity(intent);
-//                break;
-//            case R.id.index_home_tip:
-//                mLocationClient.start();
-//                if (mLocationClient != null && mLocationClient.isStarted())
-//                    mLocationClient.requestLocation();
-//                break;
-//            case R.id.home_search_textview:
-//                //intent = new Intent(getActivity(), SearchAreaActivity.class);
-//                //startActivity(intent);
-//                break;
-//            case R.id.list_one:
-//                ((MainActivity) getActivity()).setCurrentTabByTag("生活");
-//                PreferenceManager
-//                        .getDefaultSharedPreferences(getActivity()).edit()
-//                        .putBoolean("flightDelayView", true)
-//                        .apply();
-//                break;
-//            case R.id.query_policy:
-//                ((MainActivity) getActivity()).setCurrentTabByTag("保单");
-//                break;
-//            case R.id.scenic_policy:
-//                ((MainActivity) getActivity()).setCurrentTabByTag("生活");
-//                PreferenceManager
-//                        .getDefaultSharedPreferences(getActivity()).edit()
-//                        .putBoolean("scenicSpotView", true)
-//                        .apply();
-//                break;
-//            case R.id.flight_delay_policy:
-//                ((MainActivity) getActivity()).setCurrentTabByTag("生活");
-//                PreferenceManager
-//                        .getDefaultSharedPreferences(getActivity()).edit()
-//                        .putBoolean("flightDelayView", true)
-//                        .apply();
-//                break;
-//            case R.id.addView:
-//                Intent i = new Intent(getActivity(), ColligatePolicyActivity.class);
-//                startActivity(i);
-//                break;
-//
-//        }
-    }
-
-
-    @Override
-    public void onStop() {
-        // TODO Auto-generated method stub
-        super.onStop();
-        Log.d("test", "HomeFragment onStop");
-    }
-
 
     private void initViewPager() {
 
@@ -244,7 +174,7 @@ public class BookCommunityFragment extends Fragment implements View.OnClickListe
         //广告栏的小圆点图标
         for (int i = 0; i < pageViews.size(); i++) {
             //创建一个ImageView, 并设置宽高. 将该对象放入到数组中
-            imageView = new ImageView(getActivity());
+            ImageView imageView = new ImageView(getActivity());
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(20, 20);
             lp.setMargins(0, 0, 10, 0);
             imageView.setLayoutParams(lp);
