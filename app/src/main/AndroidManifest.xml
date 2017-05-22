@@ -99,6 +99,19 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity android:name=".view.LoginActivity"
+                  android:label="登陆"
+                  android:parentActivityName=".view.MainActivity"/>
+        <activity android:name=".view.RegisterActivity"
+                  android:label="注册"
+                  android:parentActivityName=".view.LoginActivity"/>
+        <activity
+            android:name="com.mob.tools.MobUIShell"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:windowSoftInputMode="stateHidden|adjustResize">
+        </activity>
+
     </application>
 
 </manifest>

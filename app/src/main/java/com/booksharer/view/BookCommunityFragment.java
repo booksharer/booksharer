@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
-public class BookCommunityFragment extends Fragment{
+public class BookCommunityFragment extends Fragment {
 
     public LocationClient mLocationClient;
 
@@ -43,10 +43,7 @@ public class BookCommunityFragment extends Fragment{
     private ImageView[] imageViews;
     private AdPageAdapter adapter;
     private AtomicInteger atomicInteger = new AtomicInteger(0);
-    private boolean isContinue = true;
 
-
-//    private LocationClient mLocationClient = null;
 
     View view;
 
@@ -65,9 +62,8 @@ public class BookCommunityFragment extends Fragment{
 
         //获取数据并显示
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        TextView city = (TextView)view.findViewById(R.id.city);
+        TextView city = (TextView) view.findViewById(R.id.city);
         city.setText(preferences.getString("city", "定位失败"));
-
 
 
         view.findViewById(R.id.locate).setOnClickListener(new View.OnClickListener() {
@@ -77,12 +73,7 @@ public class BookCommunityFragment extends Fragment{
                 getActivity().startService(startIntent); // 启动服务
             }
         });
-//
-//        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-//        Log.d("life", "刷新view");
-//        home_choose_area.setText(prefs.getString("city_name", "选择"));
-//
-//        view.findViewById(R.id.addView).setOnClickListener(this);
+
 
         return view;
     }
@@ -115,10 +106,10 @@ public class BookCommunityFragment extends Fragment{
             @Override
             public void run() {
                 while (true) {
-                    if (isContinue) {
-                        viewHandler.sendEmptyMessage(atomicInteger.get());
-                        atomicOption();
-                    }
+
+                    viewHandler.sendEmptyMessage(atomicInteger.get());
+                    atomicOption();
+
                 }
             }
         }).start();

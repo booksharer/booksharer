@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +39,13 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         //显示用户名
         view = inflater.inflate(R.layout.fragment_mine, container, false);
         name = (TextView)view.findViewById(R.id.name);
+        name.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                startActivity(intent);
+            }
+        });
         //name.setText(sname);
 
 //        user = view.findViewById(R.id.username);
