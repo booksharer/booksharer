@@ -1,15 +1,12 @@
 package com.booksharer.view;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTabHost;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -22,7 +19,6 @@ import com.booksharer.service.LocationService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.jar.Manifest;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     // 定义FragmentTabHost对象
     private FragmentTabHost mTabHost;
     // 定义数组来存放Fragment界面
-    private Class fragmentArray[] = {BookCommunityFragment.class,
+    private Class fragmentArray[] = {HomwFragment.class,
             MineFragment.class};
     // Tab选项卡的文字
     private String mTextViewArray[] = {

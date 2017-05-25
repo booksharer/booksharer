@@ -8,7 +8,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.baidu.platform.comapi.map.C;
 import com.booksharer.R;
 import com.booksharer.entity.BookCommunity;
 
@@ -17,11 +16,11 @@ import java.util.List;
 /**
  * Created by DELL on 2017/5/21.
  */
-public class BookCommunityAdapter extends RecyclerView.Adapter<BookCommunityAdapter.ViewHolder> {
+public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
     private List<BookCommunity> mBookCommunityList;
 
-    public BookCommunityAdapter(List<BookCommunity> bookCommunityList) {
+    public HomeAdapter(List<BookCommunity> bookCommunityList) {
         mBookCommunityList = bookCommunityList;
     }
 

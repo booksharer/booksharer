@@ -106,7 +106,7 @@
         <activity android:name=".view.RegisterActivity"
                   android:label="注册"
                   android:parentActivityName=".view.LoginActivity"/>
-        <activity android:name=".view.BooksActivity"
+        <activity android:name=".view.BookCommunityActivity"
                   android:label="某书圈"
                   android:parentActivityName=".view.MainActivity"/>
         <activity

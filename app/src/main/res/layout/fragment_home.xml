@@ -90,7 +90,7 @@
                         android:text="@string/neighborhood"
                         android:textSize="18sp"/>
 
-                <include layout="@layout/fragment_book_community_content"/>
+                <include layout="@layout/fragment_home_content"/>
 
                 <View
                     style="@style/Blank"

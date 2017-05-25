@@ -5,20 +5,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,28 +27,18 @@ import android.widget.Toast;
 
 //import com.baidu.location.LocationClient;
 
-import com.baidu.location.BDLocation;
-import com.baidu.location.BDLocationListener;
-import com.baidu.location.LocationClient;
-import com.baidu.location.LocationClientOption;
 import com.booksharer.R;
 import com.booksharer.entity.BookCommunity;
 import com.booksharer.entity.BookCommunityLab;
 import com.booksharer.service.LocationService;
-import com.booksharer.util.HttpUtil;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.jar.Manifest;
-
-import okhttp3.Call;
-import okhttp3.Response;
 
 
-public class BookCommunityFragment extends Fragment {
+public class HomwFragment extends Fragment {
 
     private ViewPager adViewPager;
     private LinearLayout pagerLayout;
@@ -61,7 +48,7 @@ public class BookCommunityFragment extends Fragment {
     private AtomicInteger atomicInteger = new AtomicInteger(0);
 
     private RecyclerView mRecyclerView;
-    private BookCommunityAdapter mBookCommunityAdapter;
+    private HomeAdapter mHomeAdapter;
     View view;
 
     private IntentFilter mIntentFilter;
@@ -78,7 +65,7 @@ public class BookCommunityFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_book_community, container, false);
+        view = inflater.inflate(R.layout.fragment_home, container, false);
         initViewPager();
 
         mLocalBroadcastManager = LocalBroadcastManager.getInstance(getActivity());
@@ -115,8 +102,8 @@ public class BookCommunityFragment extends Fragment {
     private void updateUI() {
         BookCommunityLab bookCommunityLab = BookCommunityLab.get(getActivity());
         List<BookCommunity> bookCommunities = bookCommunityLab.getBookCommunities();
-        mBookCommunityAdapter = new BookCommunityAdapter(bookCommunities);
-        mRecyclerView.setAdapter(mBookCommunityAdapter);
+        mHomeAdapter = new HomeAdapter(bookCommunities);
+        mRecyclerView.setAdapter(mHomeAdapter);
     }
 
     private void initViewPager() {
