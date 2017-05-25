@@ -1,11 +1,16 @@
 package com.booksharer.service;
 
+import android.Manifest;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.baidu.location.BDLocation;
@@ -13,7 +18,9 @@ import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.location.Poi;
+import com.booksharer.view.MainActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LocationService extends Service {
@@ -34,14 +41,17 @@ public class LocationService extends Service {
             public void run() {
                 myListener = new MyLocationListener();
                 mLocationClient.registerLocationListener(myListener);    //注册监听函数
-                initLocation();//设定定位参数
-                mLocationClient.start();//开始定位
-                Log.d("test", "开始定位");
+                requestLocation();
             }
         }).start();
         return super.onStartCommand(intent, flags, startId);
     }
 
+    private void requestLocation(){
+        initLocation();//设定定位参数
+        mLocationClient.start();//开始定位
+        Log.d("test", "开始定位");
+    }
     private void initLocation() {
         LocationClientOption option = new LocationClientOption();
 //        option.setLocationMode(LocationClientOption.LocationMode.Device_Sensors);//可选，默认高精度，设置定位模式，高精度，低功耗，仅设备
@@ -137,6 +147,8 @@ public class LocationService extends Service {
             editor.putString("city", location.getCity()+location.getStreet())
                     .putString("position", location.getLatitude() + "," + location.getLongitude())
                     .apply();
+            Intent intent = new Intent("com.booksharer.LOCAL_BROADCAST");
+            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
         }
     }
 }

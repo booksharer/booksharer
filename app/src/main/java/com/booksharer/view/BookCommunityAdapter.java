@@ -66,7 +66,7 @@ public class BookCommunityAdapter extends RecyclerView.Adapter<BookCommunityAdap
             mBookCommunity = community;
             communityName.setText(community.getCommunityName());
 //        communityLogo.setImageResource(community.getCommunityLogo());
-            community.setCommunityPeopleNum(community.getCommunityPeopleNum());
+            communityPeopleNum.setText(community.getCommunityPeopleNum().toString());
         }
 
         @Override

@@ -2,8 +2,11 @@ package com.booksharer.view;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTabHost;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +19,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.booksharer.R;
 import com.booksharer.service.LocationService;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.jar.Manifest;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,14 +45,27 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//启动定位服务
-        Intent startIntent = new Intent(this, LocationService.class);
-        startService(startIntent); // 启动服务
+        List<String> permissionList = new ArrayList<>();
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            permissionList.add(android.Manifest.permission.ACCESS_FINE_LOCATION);
+        }
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            permissionList.add(android.Manifest.permission.READ_PHONE_STATE);
+        }
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            permissionList.add(android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+        if (!permissionList.isEmpty()) {
+            String [] permissions = permissionList.toArray(new String[permissionList.size()]);
+            ActivityCompat.requestPermissions(this, permissions, 1);
+        } else {
+            //启动定位服务
+            Intent startIntent = new Intent(this, LocationService.class);
+            startService(startIntent); // 启动服务
+        }
 
 
         initView();
-
-
     }
 
 

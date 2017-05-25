@@ -1,14 +1,22 @@
 package com.booksharer.view;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +26,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 //import com.baidu.location.LocationClient;
 
@@ -26,16 +35,23 @@ import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.booksharer.R;
+import com.booksharer.entity.BookCommunity;
+import com.booksharer.entity.BookCommunityLab;
 import com.booksharer.service.LocationService;
+import com.booksharer.util.HttpUtil;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.jar.Manifest;
+
+import okhttp3.Call;
+import okhttp3.Response;
 
 
 public class BookCommunityFragment extends Fragment {
-
-    public LocationClient mLocationClient;
 
     private ViewPager adViewPager;
     private LinearLayout pagerLayout;
@@ -44,14 +60,19 @@ public class BookCommunityFragment extends Fragment {
     private AdPageAdapter adapter;
     private AtomicInteger atomicInteger = new AtomicInteger(0);
 
-
+    private RecyclerView mRecyclerView;
+    private BookCommunityAdapter mBookCommunityAdapter;
     View view;
 
+    private IntentFilter mIntentFilter;
+
+    private LocalReceiver mLocalReceiver;
+
+    private LocalBroadcastManager mLocalBroadcastManager;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-//        mLocationClient = ((LocationApplication) getActivity().getApplication()).mLocationClient;
     }
 
     @Override
@@ -60,22 +81,42 @@ public class BookCommunityFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_book_community, container, false);
         initViewPager();
 
-        //获取数据并显示
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        TextView city = (TextView) view.findViewById(R.id.city);
-        city.setText(preferences.getString("city", "定位失败"));
+        mLocalBroadcastManager = LocalBroadcastManager.getInstance(getActivity());
 
+        mIntentFilter = new IntentFilter();
+        mIntentFilter.addAction("com.booksharer.LOCAL_BROADCAST");
+        mLocalReceiver = new LocalReceiver();
+        mLocalBroadcastManager.registerReceiver(mLocalReceiver, mIntentFilter);
 
         view.findViewById(R.id.locate).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 Intent startIntent = new Intent(getActivity(), LocationService.class);
                 getActivity().startService(startIntent); // 启动服务
             }
         });
 
+        mRecyclerView = (RecyclerView) view
+                .findViewById(R.id.recycler_view_book_community);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        updateUI();
 
         return view;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mLocalBroadcastManager.unregisterReceiver(mLocalReceiver);
+    }
+
+    private void updateUI() {
+        BookCommunityLab bookCommunityLab = BookCommunityLab.get(getActivity());
+        List<BookCommunity> bookCommunities = bookCommunityLab.getBookCommunities();
+        mBookCommunityAdapter = new BookCommunityAdapter(bookCommunities);
+        mRecyclerView.setAdapter(mBookCommunityAdapter);
     }
 
     private void initViewPager() {
@@ -270,4 +311,28 @@ public class BookCommunityFragment extends Fragment {
         }
     }
 
+    private class LocalReceiver extends BroadcastReceiver{
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            TextView city = (TextView) view.findViewById(R.id.city);
+            city.setText(preferences.getString("city", "定位失败"));
+            Toast.makeText(context,preferences.getString("city", "定位失败"), Toast.LENGTH_SHORT).show();
+            HashMap<String, String> map = new HashMap<String, String>();
+            map.put("position", preferences.getString("position", "0.0, 0.0"));
+//            HttpUtil.sendOkHttpPost("", map, new okhttp3.Callback() {
+//                @Override
+//                public void onFailure(Call call, IOException e) {
+//                    Toast.makeText(view.getContext(),"网络故障", Toast.LENGTH_SHORT).show();
+//
+//                }
+//
+//                @Override
+//                public void onResponse(Call call, Response response) throws IOException {
+//                    Toast.makeText(view.getContext(),"圈子结果", Toast.LENGTH_SHORT).show();
+//                    String responseData = response.body().string();
+//                }
+//            });
+        }
+    }
 }
