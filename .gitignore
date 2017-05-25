@@ -39,6 +39,14 @@ captures/
 .idea/gradle.xml
 .idea/dictionaries
 .idea/libraries
+.idea/.name
+.idea/encodings.xml
+.idea/inspectionProfiles/Project_Default.xml
+.idea/inspectionProfiles/profiles_settings.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/scopes/scope_settings.xml
+.idea/vcs.xml
 
 # Keystore files
 *.jks
@@ -53,3 +61,4 @@ google-services.json
 freeline.py
 freeline/
 freeline_project_description.json
+app/src/main/java/com/booksharer/db/
