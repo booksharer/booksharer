@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -25,20 +26,25 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-//import com.baidu.location.LocationClient;
-
 import com.booksharer.R;
 import com.booksharer.entity.BookCommunity;
 import com.booksharer.entity.BookCommunityLab;
 import com.booksharer.service.LocationService;
+import com.booksharer.util.HttpUtil;
+import com.booksharer.util.MyApplication;
+import com.booksharer.util.Utility;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import okhttp3.Call;
+import okhttp3.Response;
 
-public class HomwFragment extends Fragment {
+
+public class HomeFragment extends Fragment {
 
     private ViewPager adViewPager;
     private LinearLayout pagerLayout;
@@ -87,7 +93,12 @@ public class HomwFragment extends Fragment {
         mRecyclerView = (RecyclerView) view
                 .findViewById(R.id.recycler_view_book_community);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
         updateUI();
 
         return view;
@@ -102,8 +113,12 @@ public class HomwFragment extends Fragment {
     private void updateUI() {
         BookCommunityLab bookCommunityLab = BookCommunityLab.get(getActivity());
         List<BookCommunity> bookCommunities = bookCommunityLab.getBookCommunities();
-        mHomeAdapter = new HomeAdapter(bookCommunities);
-        mRecyclerView.setAdapter(mHomeAdapter);
+        if (mHomeAdapter == null) {
+            mHomeAdapter = new HomeAdapter(bookCommunities);
+            mRecyclerView.setAdapter(mHomeAdapter);
+        } else {
+            mHomeAdapter.notifyDataSetChanged();
+        }
     }
 
     private void initViewPager() {
@@ -134,10 +149,8 @@ public class HomwFragment extends Fragment {
             @Override
             public void run() {
                 while (true) {
-
                     viewHandler.sendEmptyMessage(atomicInteger.get());
                     atomicOption();
-
                 }
             }
         }).start();
@@ -298,28 +311,36 @@ public class HomwFragment extends Fragment {
         }
     }
 
-    private class LocalReceiver extends BroadcastReceiver{
+    private class LocalReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
             TextView city = (TextView) view.findViewById(R.id.city);
             city.setText(preferences.getString("city", "定位失败"));
-            Toast.makeText(context,preferences.getString("city", "定位失败"), Toast.LENGTH_SHORT).show();
-            HashMap<String, String> map = new HashMap<String, String>();
+            Toast.makeText(context, preferences.getString("city", "定位失败"), Toast.LENGTH_SHORT).show();
+            HashMap<String, String> map = new HashMap<>();
             map.put("position", preferences.getString("position", "0.0, 0.0"));
-//            HttpUtil.sendOkHttpPost("", map, new okhttp3.Callback() {
-//                @Override
-//                public void onFailure(Call call, IOException e) {
-//                    Toast.makeText(view.getContext(),"网络故障", Toast.LENGTH_SHORT).show();
-//
-//                }
-//
-//                @Override
-//                public void onResponse(Call call, Response response) throws IOException {
-//                    Toast.makeText(view.getContext(),"圈子结果", Toast.LENGTH_SHORT).show();
-//                    String responseData = response.body().string();
-//                }
-//            });
+            MyApplication.setUrl_api("/community/findNear?"
+                    + "currentPosition=" + MyApplication.getPosition()
+                    + "&pageIndex=1"
+                    + "&pageSize=5");
+            HttpUtil.sendOkHttpPost(MyApplication.getUrl_api(), map, new okhttp3.Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Toast.makeText(view.getContext(), "网络故障", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    String responseData = response.body().string();
+                    if (Utility.handleFindNearCommunityResponse(responseData)) {
+                        //显示
+                        updateUI();
+                    } else {
+                        Toast.makeText(view.getContext(), "网络故障", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
         }
     }
 }

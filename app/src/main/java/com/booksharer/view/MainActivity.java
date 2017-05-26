@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     // 定义FragmentTabHost对象
     private FragmentTabHost mTabHost;
     // 定义数组来存放Fragment界面
-    private Class fragmentArray[] = {HomwFragment.class,
+    private Class fragmentArray[] = {HomeFragment.class,
             MineFragment.class};
     // Tab选项卡的文字
     private String mTextViewArray[] = {
@@ -59,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
             Intent startIntent = new Intent(this, LocationService.class);
             startService(startIntent); // 启动服务
         }
-
 
         initView();
     }

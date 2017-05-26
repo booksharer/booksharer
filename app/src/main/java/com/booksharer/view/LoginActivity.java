@@ -5,41 +5,33 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-
 import com.booksharer.R;
 import com.booksharer.util.HttpUtil;
+import com.booksharer.util.MyApplication;
+import com.booksharer.util.Utility;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
-
 import okhttp3.Call;
 import okhttp3.Response;
 
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity{
-
-
-
-
+public class LoginActivity extends AppCompatActivity {
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
-//    private UserLoginTask mAuthTask = null;
 
     // UI references.
     private AutoCompleteTextView mUserNameView;
@@ -53,10 +45,6 @@ public class LoginActivity extends AppCompatActivity{
         setContentView(R.layout.activity_login);
         initView();
         populateAutoComplete();
-
-
-
-
     }
 
     private void populateAutoComplete() {
@@ -66,7 +54,7 @@ public class LoginActivity extends AppCompatActivity{
 
         // 用逗号分割内容返回数组
         String[] history_arr = history.split(",");
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, history_arr);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, history_arr);
         mUserNameView.setAdapter(adapter);
     }
 
@@ -100,10 +88,6 @@ public class LoginActivity extends AppCompatActivity{
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
-//        if (mAuthTask != null) {
-//            return;
-//        }
-
         // Reset errors.
         mUserNameView.setError(null);
         mPasswordView.setError(null);
@@ -115,23 +99,19 @@ public class LoginActivity extends AppCompatActivity{
         boolean cancel = false;
         View focusView = null;
 
-        // Check for a valid password, if the user entered one.
         if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
-        }
-
-        // Check for a valid userName
-        if (TextUtils.isEmpty(userName)) {
+        }else if (TextUtils.isEmpty(userName)) {
             mUserNameView.setError(getString(R.string.error_field_required));
             focusView = mUserNameView;
             cancel = true;
-        } else if (!isUseerNameValid(userName)) {
-            mUserNameView.setError(getString(R.string.error_invalid_user_name));
+        } else if (!isUserNameValid(userName)&&!isPhoneValid(userName)) {
+            mUserNameView.setError(getString(R.string.error_invalid_user_name_phone));
             focusView = mUserNameView;
             cancel = true;
-        }else {
+        } else {
             recordUserName(userName);
         }
 
@@ -143,26 +123,28 @@ public class LoginActivity extends AppCompatActivity{
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            HashMap<String, String> map = new HashMap<String, String>();
-            map.put("userName", mUserNameView.getText().toString());
+            HashMap<String, String> map = new HashMap<>();
+            map.put("uniqueAccount", mUserNameView.getText().toString());
             map.put("password", mPasswordView.getText().toString());
-            map.put("action", "login");
-            HttpUtil.sendOkHttpPost("", map, new okhttp3.Callback() {
+            MyApplication.setUrl_api("/user/login");
+            HttpUtil.sendOkHttpPost(MyApplication.getUrl_api(), map, new okhttp3.Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
-                    mPasswordView.setError(getString(R.string.error_incorrect_password));
-                     mPasswordView.requestFocus();
+
                 }
 
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
                     String responseData = response.body().string();
-                    Log.d("test", "responseData "+responseData);
-                    finish();
+                    if (Utility.handleLoginResponse(responseData)) {
+                        finish();
+                    }else{
+                        mPasswordView.getText().clear();
+                        mPasswordView.setError(getString(R.string.error_incorrect_user));
+                        mPasswordView.requestFocus();
+                    }
                 }
             });
-//            mAuthTask = new UserLoginTask(userName, password);
-//            mAuthTask.execute((Void) null);
         }
     }
 
@@ -177,12 +159,12 @@ public class LoginActivity extends AppCompatActivity{
         if (!history.contains(userName)) {
             SharedPreferences.Editor myeditor = sharePreferences.edit();
             myeditor.putString("history", builder.toString());
-            myeditor.commit();
+            myeditor.apply();
         }
 
     }
 
-    private boolean isUseerNameValid(String userName) {
+    private boolean isUserNameValid(String userName) {
         //TODO: Replace this with your own logic
         return userName.matches("[a-zA-Z][a-zA-Z0-9]{3,15}");
     }
@@ -192,6 +174,10 @@ public class LoginActivity extends AppCompatActivity{
         return password.length() > 4;
     }
 
+    private boolean isPhoneValid(String phone) {
+        String telRegex = "[1][358]\\d{9}";// "[1]"代表第1位为数字1，"[358]"代表第二位可以为3、5、8中的一个，"\\d{9}"代表后面是可以是0～9的数字，有9位。
+        return !TextUtils.isEmpty(phone) && phone.matches(telRegex);
+    }
     /**
      * Shows the progress UI and hides the login form.
      */
@@ -227,53 +213,4 @@ public class LoginActivity extends AppCompatActivity{
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
-
-
-
-
-//    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-//
-//        private final String mUserName;
-//        private final String mPassword;
-//
-//        UserLoginTask(String userName, String password) {
-//            mUserName = userName;
-//            mPassword = password;
-//        }
-//
-//        @Override
-//        protected Boolean doInBackground(Void... params) {
-//            // TODO: attempt authentication against a network service.
-//
-//            try {
-//                // Simulate network access.
-//                Thread.sleep(2000);
-//            } catch (InterruptedException e) {
-//                return false;
-//            }
-//
-//            // TODO: register the new account here.
-//            return true;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(final Boolean success) {
-//            mAuthTask = null;
-//            showProgress(false);
-//
-//            if (success) {
-//                finish();
-//            } else {
-//                mPasswordView.setError(getString(R.string.error_incorrect_password));
-//                mPasswordView.requestFocus();
-//            }
-//        }
-//
-//        @Override
-//        protected void onCancelled() {
-//            mAuthTask = null;
-//            showProgress(false);
-//        }
-//    }
 }
-
