@@ -106,15 +106,24 @@
         <activity android:name=".view.RegisterActivity"
                   android:label="注册"
                   android:parentActivityName=".view.LoginActivity"/>
-        <activity android:name=".view.BookCommunityActivity"
-                  android:label="某书圈"
-                  android:parentActivityName=".view.MainActivity"/>
+        <!--<activity android:name=".view.BookCommunityActivity"-->
+                  <!--android:label="某书圈"-->
+                  <!--android:parentActivityName=".view.MainActivity"/>-->
         <activity
             android:name="com.mob.tools.MobUIShell"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:windowSoftInputMode="stateHidden|adjustResize">
         </activity>
+        <provider
+            android:authorities="com.booksharer.camera.fileprovider"
+            android:name="android.support.v4.content.FileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"/>
+        </provider>
 
     </application>
 
