@@ -45,7 +45,7 @@ import okhttp3.Response;
 
 
 public class HomeFragment extends Fragment {
-
+    private TextView city;
     private ViewPager adViewPager;
     private LinearLayout pagerLayout;
     private List<View> pageViews;
@@ -76,7 +76,8 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home, container, false);
         initViewPager();
-
+        city = (TextView) view.findViewById(R.id.city);
+        city.setText(MyApplication.getArea());
         mLocalBroadcastManager = LocalBroadcastManager.getInstance(getActivity());
 
         mIntentFilter = new IntentFilter();
@@ -87,7 +88,6 @@ public class HomeFragment extends Fragment {
         view.findViewById(R.id.locate).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Intent startIntent = new Intent(getActivity(), LocationService.class);
                 getActivity().startService(startIntent); // 启动服务
             }
@@ -95,26 +95,7 @@ public class HomeFragment extends Fragment {
 
         mRecyclerView = (RecyclerView) view
                 .findViewById(R.id.recycler_view_book_community);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                LinearLayoutManager mLinearLayoutManager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
-                if (dy > 0) //向下滚动
-                {
-                    int visibleItemCount = mLinearLayoutManager.getChildCount();
-                    int totalItemCount = mLinearLayoutManager.getItemCount();
-                    int pastVisiblesItems = mLinearLayoutManager.findFirstVisibleItemPosition();
-
-                    if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
-//                        loadMoreDate();
-                    }
-                }
-            }
-        });
         updateUI();
-
         return view;
     }
 
@@ -125,8 +106,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void updateUI() {
-        BookCommunityLab bookCommunityLab = BookCommunityLab.get(getActivity());
-        List<BookCommunity> bookCommunities = bookCommunityLab.getBookCommunities();
+        final BookCommunityLab bookCommunityLab = BookCommunityLab.get(getActivity());
         if (mHomeAdapter == null) {
             Log.d("test", "创建被装饰者类实例");
             //创建被装饰者类实例
@@ -148,8 +128,10 @@ public class HomeFragment extends Fragment {
                                 bookCommunity.setCommunityLogo("url");
                                 mBookCommunities.add(bookCommunity);
                             }
+                            bookCommunityLab.appendBookCommunities(mBookCommunities);
+                            final List<BookCommunity> bookCommunities = bookCommunityLab.getBookCommunities();
                             //数据的处理最终还是交给被装饰的adapter来处理
-                            mHomeAdapter.appendData(mBookCommunities);
+                            mHomeAdapter.updateData(bookCommunities);
                             callback.onSuccess();
                             //模拟加载到没有更多数据的情况，触发onFailure
                             if (loadCount++ == 3) {
@@ -159,12 +141,13 @@ public class HomeFragment extends Fragment {
                     }, 2000);
                 }
             });
-            mRecyclerView.setAdapter(mAdapter);
-            mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+
         } else {
             Log.d("test", "notify");
             mAdapter.notifyDataSetChanged();
         }
+        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
     }
 
     private void initViewPager() {
@@ -360,16 +343,13 @@ public class HomeFragment extends Fragment {
     private class LocalReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
             TextView city = (TextView) view.findViewById(R.id.city);
-            city.setText(preferences.getString("city", "定位失败"));
-            Toast.makeText(context, preferences.getString("city", "定位失败"), Toast.LENGTH_SHORT).show();
+            city.setText(MyApplication.getArea());
             HashMap<String, String> map = new HashMap<>();
-            map.put("position", preferences.getString("position", "0.0, 0.0"));
-            MyApplication.setUrl_api("/community/findNear?"
-                    + "currentPosition=" + MyApplication.getPosition()
-                    + "&pageIndex=1"
-                    + "&pageSize=5");
+            map.put("currentPosition", MyApplication.getPosition());
+            map.put("pageIndex","1");
+            map.put("pageSize","5");
+            MyApplication.setUrl_api("/community/findNear", map);
             HttpUtil.sendOkHttpPost(MyApplication.getUrl_api(), map, new okhttp3.Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {

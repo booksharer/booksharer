@@ -13,6 +13,8 @@ import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.location.Poi;
+import com.booksharer.util.MyApplication;
+
 import java.util.List;
 
 public class LocationService extends Service {
@@ -135,10 +137,8 @@ public class LocationService extends Service {
                 }
             }
             Log.d("test", sb.toString());
-            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
-            editor.putString("city", location.getCity()+location.getStreet())
-                    .putString("position", location.getLatitude() + "," + location.getLongitude())
-                    .apply();
+            MyApplication.setPosition(location.getLatitude() + "," + location.getLongitude());
+            MyApplication.setArea(location.getCity()+location.getStreet());
             Intent intent = new Intent("com.booksharer.LOCAL_BROADCAST");
             LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
         }

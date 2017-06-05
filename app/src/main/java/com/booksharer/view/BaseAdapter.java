@@ -19,20 +19,8 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter {
 
 
     public void updateData(List dataSet) {
-        this.dataSet.clear();
-        appendData(dataSet);
-    }
-
-    public void appendData(List dataSet) {
-        if (dataSet != null && !dataSet.isEmpty()) {
-            this.dataSet.addAll(dataSet);
-            Log.d("test", " "+dataSet.size());
-            notifyDataSetChanged();
-        }
-    }
-
-    public List<T> getDataSet() {
-        return dataSet;
+        this.dataSet = dataSet;
+        notifyDataSetChanged();
     }
 
     @Override

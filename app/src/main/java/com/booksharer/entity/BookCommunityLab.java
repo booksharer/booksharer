@@ -56,7 +56,6 @@ public class BookCommunityLab {
 
 
     public void appendBookCommunities(List<BookCommunity> bookCommunities){
-
         mBookCommunities.addAll(bookCommunities) ;
     }
 
@@ -68,7 +67,7 @@ public class BookCommunityLab {
         mBookCommunities = bookCommunities;
     }
 
-    public static void dismiss() {
+    public static void clear() {
         sBookCommunityLab = null;
     }
 

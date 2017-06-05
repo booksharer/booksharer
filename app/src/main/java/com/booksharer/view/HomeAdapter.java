@@ -11,6 +11,8 @@ import android.widget.Toast;
 
 import com.booksharer.R;
 import com.booksharer.entity.BookCommunity;
+import com.booksharer.entity.BookCommunityLab;
+import com.booksharer.util.MyApplication;
 
 import java.util.List;
 
@@ -35,7 +37,7 @@ public class HomeAdapter extends BaseAdapter<BookCommunity>{
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ((ViewHolder) holder).bindBookCommunity(getDataSet().get(position));
+        ((ViewHolder) holder).bindBookCommunity(BookCommunityLab.get(MyApplication.getContext()).getBookCommunities().get(position));
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
