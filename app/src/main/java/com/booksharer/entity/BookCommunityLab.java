@@ -10,6 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -34,13 +35,6 @@ public class BookCommunityLab {
                 '}';
     }
 
-    public static BookCommunityLab get(String policyArray) throws JSONException {
-        if (sBookCommunityLab == null) {
-            sBookCommunityLab = new BookCommunityLab(policyArray);
-        }
-        return sBookCommunityLab;
-    }
-
     public static BookCommunityLab get(Context context) {
         if (sBookCommunityLab == null) {
             sBookCommunityLab = new BookCommunityLab(context);
@@ -50,18 +44,20 @@ public class BookCommunityLab {
 
     private BookCommunityLab(Context context){
         mBookCommunities = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 6; i++) {
             BookCommunity bookCommunity = new BookCommunity ();
             bookCommunity.setId( i);
             bookCommunity.setCommunityName("Crime #" + i);
             bookCommunity.setCommunityPeopleNum(i*5+2);
             bookCommunity.setCommunityLogo("url");
             mBookCommunities.add(bookCommunity);
-        }    }
-    private BookCommunityLab(String jsonData) throws JSONException {
-        mBookCommunities = new ArrayList<>();
-        Gson gson = new Gson();
-        mBookCommunities = gson.fromJson(jsonData, new TypeToken<List<BookCommunity>>(){}.getType());
+        }
+    }
+
+
+    public void appendBookCommunities(List<BookCommunity> bookCommunities){
+
+        mBookCommunities.addAll(bookCommunities) ;
     }
 
     public List<BookCommunity> getBookCommunities() {

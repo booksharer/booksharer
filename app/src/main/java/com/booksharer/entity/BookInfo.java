@@ -5,22 +5,31 @@ import java.io.Serializable;
 public class BookInfo  implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private Integer id;
+    private String id;
     private String bookName;
+    private String originName;
     private String author;
+    private String translateAuthor;
     private String publisher;
     private String publishDate;
     private String price;
     private String isbn;
-    private Integer pageNum;
+    private String pageNum;
     private String bookPic;
+    private String zhuangZhen;
+    private String congShu;
+    private Double score;
+    private String contentIntro;
+    private String authorIntro;
+    private String menu;
+    private String tags;
 
 
-    public Integer getId() {
+    public String getId() {
         return id;
    }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
    }
 
@@ -32,12 +41,28 @@ public class BookInfo  implements Serializable {
         this.bookName = bookName;
    }
 
+    public String getOriginName() {
+        return originName;
+   }
+
+    public void setOriginName(String originName) {
+        this.originName = originName;
+   }
+
     public String getAuthor() {
         return author;
    }
 
     public void setAuthor(String author) {
         this.author = author;
+   }
+
+    public String getTranslateAuthor() {
+        return translateAuthor;
+   }
+
+    public void setTranslateAuthor(String translateAuthor) {
+        this.translateAuthor = translateAuthor;
    }
 
     public String getPublisher() {
@@ -72,11 +97,11 @@ public class BookInfo  implements Serializable {
         this.isbn = isbn;
    }
 
-    public Integer getPageNum() {
+    public String getPageNum() {
         return pageNum;
    }
 
-    public void setPageNum(Integer pageNum) {
+    public void setPageNum(String pageNum) {
         this.pageNum = pageNum;
    }
 
@@ -88,23 +113,89 @@ public class BookInfo  implements Serializable {
         this.bookPic = bookPic;
    }
 
+    public String getZhuangZhen() {
+        return zhuangZhen;
+   }
+
+    public void setZhuangZhen(String zhuangZhen) {
+        this.zhuangZhen = zhuangZhen;
+   }
+
+    public String getCongShu() {
+        return congShu;
+   }
+
+    public void setCongShu(String congShu) {
+        this.congShu = congShu;
+   }
+
+    public Double getScore() {
+        return score;
+   }
+
+    public void setScore(Double score) {
+        this.score = score;
+   }
+
+    public String getContentIntro() {
+        return contentIntro;
+   }
+
+    public void setContentIntro(String contentIntro) {
+        this.contentIntro = contentIntro;
+   }
+
+    public String getAuthorIntro() {
+        return authorIntro;
+   }
+
+    public void setAuthorIntro(String authorIntro) {
+        this.authorIntro = authorIntro;
+   }
+
+    public String getMenu() {
+        return menu;
+   }
+
+    public void setMenu(String menu) {
+        this.menu = menu;
+   }
+
+    public String getTags() {
+        return tags;
+   }
+
+    public void setTags(String tags) {
+        this.tags = tags;
+   }
+
     @Override
     public String toString() {
         return "BookInfo{" +
-                "id=" + id +
+                "id='" + id + '\'' +
                 ", bookName='" + bookName + '\'' +
+                ", originName='" + originName + '\'' +
                 ", author='" + author + '\'' +
+                ", translateAuthor='" + translateAuthor + '\'' +
                 ", publisher='" + publisher + '\'' +
                 ", publishDate='" + publishDate + '\'' +
                 ", price='" + price + '\'' +
                 ", isbn='" + isbn + '\'' +
-                ", pageNum=" + pageNum +
+                ", pageNum='" + pageNum + '\'' +
                 ", bookPic='" + bookPic + '\'' +
+                ", zhuangZhen='" + zhuangZhen + '\'' +
+                ", congShu='" + congShu + '\'' +
+                ", score=" + score +
+                ", contentIntro='" + contentIntro + '\'' +
+                ", authorIntro='" + authorIntro + '\'' +
+                ", menu='" + menu + '\'' +
+                ", tags='" + tags + '\'' +
                 '}';
     }
 }
 
 /*List columns as follows:
-"id", "book_name", "author", "publisher", "publish_date", "price", "isbn", 
-"page_num", "book_pic"
+"id", "book_name", "origin_name", "author", "translate_author", "publisher", "publish_date", 
+"price", "isbn", "page_num", "book_pic", "zhuang_zhen", "cong_shu", "score", 
+"content_intro", "author_intro", "menu", "tags"
 */

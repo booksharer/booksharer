@@ -68,12 +68,243 @@ public class Utility {
 
     }
 
+
+    public static boolean handleAddBookResponse(String response) {
+        if (!TextUtils.isEmpty(response)) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                if (jsonObject.getInt("state") == 0) {
+                   // jsonObject.getInt("data");//data返回书本的id信息
+                    return true;
+                } else
+                    Toast.makeText(MyApplication.getContext(), jsonObject.getString("desc"), Toast.LENGTH_SHORT).show();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+    public static boolean handleFindBookResponse(String response) {
+        if (!TextUtils.isEmpty(response)) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                if (jsonObject.getInt("state") == 0) {
+                    //TODO
+                    jsonObject.getJSONArray("data");//data返回查找书本数组
+                    return true;
+                } else
+                    Toast.makeText(MyApplication.getContext(), jsonObject.getString("desc"), Toast.LENGTH_SHORT).show();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+    public static boolean handleFindBookInCommunityResponse(String response) {
+        if (!TextUtils.isEmpty(response)) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                if (jsonObject.getInt("state") == 0) {
+                    //TODO
+                    jsonObject.getJSONArray("data");//data返回查找书本数组
+                    return true;
+                } else
+                    Toast.makeText(MyApplication.getContext(), jsonObject.getString("desc"), Toast.LENGTH_SHORT).show();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+
+    public static boolean handleAddUserBookResponse(String response) {
+        if (!TextUtils.isEmpty(response)) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                if (jsonObject.getInt("state") == 0) {
+                    return true;
+                } else
+                    Toast.makeText(MyApplication.getContext(), jsonObject.getString("desc"), Toast.LENGTH_SHORT).show();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+    public static boolean handleDelUserBookResponse(String response) {
+        if (!TextUtils.isEmpty(response)) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                if (jsonObject.getInt("state") == 0) {
+                    return true;
+                } else
+                    Toast.makeText(MyApplication.getContext(), jsonObject.getString("desc"), Toast.LENGTH_SHORT).show();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+
+    public static boolean handleAddCommunityResponse(String response) {
+        if (!TextUtils.isEmpty(response)) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                if (jsonObject.getInt("state") == 0) {
+                    //TODO
+                    jsonObject.getJSONArray("data");//data返回书圈的id信息
+                    return true;
+                } else
+                    Toast.makeText(MyApplication.getContext(), jsonObject.getString("desc"), Toast.LENGTH_SHORT).show();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+
     public static boolean handleFindNearCommunityResponse(String response) {
         if (!TextUtils.isEmpty(response)) {
             try {
                 JSONObject jsonObject = new JSONObject(response);
                 if (jsonObject.getInt("state") == 0) {
-                    BookCommunityLab.get(jsonObject.getJSONObject("data").toString());
+                    Gson gson = new Gson();
+                    List<BookCommunity> bookCommunities = gson.fromJson(jsonObject.getJSONObject("data").toString(), new TypeToken<List<BookCommunity>>(){}.getType());
+                    BookCommunityLab.get(MyApplication.getContext()).appendBookCommunities(bookCommunities);
+                    return true;
+                } else
+                    Toast.makeText(MyApplication.getContext(), jsonObject.getString("desc"), Toast.LENGTH_SHORT).show();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+    public static boolean handleBorrowOrderResponse(String response) {
+        if (!TextUtils.isEmpty(response)) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                if (jsonObject.getInt("state") == 0) {
+                    return true;
+                } else
+                    Toast.makeText(MyApplication.getContext(), jsonObject.getString("desc"), Toast.LENGTH_SHORT).show();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+    public static boolean handleAllStateResponse(String response) {
+        if (!TextUtils.isEmpty(response)) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                if (jsonObject.getInt("state") == 0) {
+                    //data中含有多个借书信息的数组
+                    //TODO
+                    jsonObject.getJSONArray("data");
+                    return true;
+                } else
+                    Toast.makeText(MyApplication.getContext(), jsonObject.getString("desc"), Toast.LENGTH_SHORT).show();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+    public static boolean handleBorrowAgreeResponse(String response) {
+        if (!TextUtils.isEmpty(response)) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                if (jsonObject.getInt("state") == 0) {
+                    return true;
+                } else
+                    Toast.makeText(MyApplication.getContext(), jsonObject.getString("desc"), Toast.LENGTH_SHORT).show();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+
+    public static boolean handleBorrowGetBookResponse(String response) {
+        if (!TextUtils.isEmpty(response)) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                if (jsonObject.getInt("state") == 0) {
+                    return true;
+                } else
+                    Toast.makeText(MyApplication.getContext(), jsonObject.getString("desc"), Toast.LENGTH_SHORT).show();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+
+    public static boolean handleBorrowReturnBookResponse(String response) {
+        if (!TextUtils.isEmpty(response)) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                if (jsonObject.getInt("state") == 0) {
+                    return true;
+                } else
+                    Toast.makeText(MyApplication.getContext(), jsonObject.getString("desc"), Toast.LENGTH_SHORT).show();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+
+    public static boolean handleCommentAddResponse(String response) {
+        if (!TextUtils.isEmpty(response)) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                if (jsonObject.getInt("state") == 0) {
+                    return true;
+                } else
+                    Toast.makeText(MyApplication.getContext(), jsonObject.getString("desc"), Toast.LENGTH_SHORT).show();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+    public static boolean handleCommentDelResponse(String response) {
+        if (!TextUtils.isEmpty(response)) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                if (jsonObject.getInt("state") == 0) {
+                    return true;
+                } else
+                    Toast.makeText(MyApplication.getContext(), jsonObject.getString("desc"), Toast.LENGTH_SHORT).show();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+    public static boolean handleCommentFindResponse(String response) {
+        if (!TextUtils.isEmpty(response)) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                if (jsonObject.getInt("state") == 0) {
+                    //TODO
+                    jsonObject.getJSONArray("data");
                     return true;
                 } else
                     Toast.makeText(MyApplication.getContext(), jsonObject.getString("desc"), Toast.LENGTH_SHORT).show();

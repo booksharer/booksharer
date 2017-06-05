@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -17,6 +16,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,6 +54,7 @@ public class HomeFragment extends Fragment {
     private AtomicInteger atomicInteger = new AtomicInteger(0);
 
     private RecyclerView mRecyclerView;
+    private BaseAdapter mAdapter;
     private HomeAdapter mHomeAdapter;
     View view;
 
@@ -62,6 +63,8 @@ public class HomeFragment extends Fragment {
     private LocalReceiver mLocalReceiver;
 
     private LocalBroadcastManager mLocalBroadcastManager;
+    int loadCount;
+
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -97,6 +100,17 @@ public class HomeFragment extends Fragment {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
+                LinearLayoutManager mLinearLayoutManager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
+                if (dy > 0) //向下滚动
+                {
+                    int visibleItemCount = mLinearLayoutManager.getChildCount();
+                    int totalItemCount = mLinearLayoutManager.getItemCount();
+                    int pastVisiblesItems = mLinearLayoutManager.findFirstVisibleItemPosition();
+
+                    if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+//                        loadMoreDate();
+                    }
+                }
             }
         });
         updateUI();
@@ -114,10 +128,42 @@ public class HomeFragment extends Fragment {
         BookCommunityLab bookCommunityLab = BookCommunityLab.get(getActivity());
         List<BookCommunity> bookCommunities = bookCommunityLab.getBookCommunities();
         if (mHomeAdapter == null) {
-            mHomeAdapter = new HomeAdapter(bookCommunities);
-            mRecyclerView.setAdapter(mHomeAdapter);
+            Log.d("test", "创建被装饰者类实例");
+            //创建被装饰者类实例
+            mHomeAdapter = new HomeAdapter(getActivity());
+            mAdapter = new LoadMoreAdapterWrapper(mHomeAdapter,new OnLoad() {
+                @Override
+                public void load(int pagePosition, int pageSize, final ILoadCallback callback) {
+                    //此处模拟做网络操作，2s延迟，将拉取的数据更新到adpter中
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d("test", "触发");
+                            List<BookCommunity> mBookCommunities = new ArrayList<>();
+                            for (int i = 0; i < 3; i++) {
+                                BookCommunity bookCommunity = new BookCommunity ();
+                                bookCommunity.setId( i);
+                                bookCommunity.setCommunityName("Crime #" + i + loadCount*10);
+                                bookCommunity.setCommunityPeopleNum(i*5+2);
+                                bookCommunity.setCommunityLogo("url");
+                                mBookCommunities.add(bookCommunity);
+                            }
+                            //数据的处理最终还是交给被装饰的adapter来处理
+                            mHomeAdapter.appendData(mBookCommunities);
+                            callback.onSuccess();
+                            //模拟加载到没有更多数据的情况，触发onFailure
+                            if (loadCount++ == 3) {
+                                callback.onFailure();
+                            }
+                        }
+                    }, 2000);
+                }
+            });
+            mRecyclerView.setAdapter(mAdapter);
+            mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         } else {
-            mHomeAdapter.notifyDataSetChanged();
+            Log.d("test", "notify");
+            mAdapter.notifyDataSetChanged();
         }
     }
 
@@ -327,7 +373,7 @@ public class HomeFragment extends Fragment {
             HttpUtil.sendOkHttpPost(MyApplication.getUrl_api(), map, new okhttp3.Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
-                    Toast.makeText(view.getContext(), "网络故障", Toast.LENGTH_SHORT).show();
+
                 }
 
                 @Override

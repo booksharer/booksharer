@@ -1,5 +1,6 @@
 package com.booksharer.view;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,12 +17,12 @@ import java.util.List;
 /**
  * Created by DELL on 2017/5/21.
  */
-public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
+public class HomeAdapter extends BaseAdapter<BookCommunity>{
 
-    private List<BookCommunity> mBookCommunityList;
+    private Context mContext;
 
-    public HomeAdapter(List<BookCommunity> bookCommunityList) {
-        mBookCommunityList = bookCommunityList;
+    public HomeAdapter(Context context) {
+        mContext = context;
     }
 
     @Override
@@ -33,20 +34,11 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        BookCommunity community = mBookCommunityList.get(position);
-        holder.bindBookCommunity(community);
-
-
-    }
-
-    @Override
-    public int getItemCount() {
-        return mBookCommunityList.size();
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        ((ViewHolder) holder).bindBookCommunity(getDataSet().get(position));
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        private BookCommunity mBookCommunity;
         View communityView;
         TextView communityName;
         ImageView communityLogo;
@@ -62,7 +54,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         }
 
         public void bindBookCommunity(BookCommunity community) {
-            mBookCommunity = community;
             communityName.setText(community.getCommunityName());
 //        communityLogo.setImageResource(community.getCommunityLogo());
             communityPeopleNum.setText(community.getCommunityPeopleNum().toString());
@@ -71,9 +62,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         @Override
         public void onClick(View v) {
             Toast.makeText(v.getContext(),
-                    mBookCommunity.getCommunityName() + " clicked!", Toast.LENGTH_SHORT)
+                    communityName.getText() + " clicked!", Toast.LENGTH_SHORT)
                     .show();
-
         }
     }
 }

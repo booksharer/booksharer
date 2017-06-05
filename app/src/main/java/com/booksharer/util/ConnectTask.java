@@ -19,10 +19,8 @@ public class ConnectTask extends AsyncTask<HashMap<String, String>, String, Bool
 
     @Override
     protected Boolean doInBackground(HashMap<String, String>... params) {
-        Log.d("test", "in to do fang zhi xun in background!");
         try {
             response = postParams(params[0]);
-            Log.d("test", response);
         } catch (Exception e) {
             return false;
         }
@@ -40,7 +38,7 @@ public class ConnectTask extends AsyncTask<HashMap<String, String>, String, Bool
     public String postParams(HashMap<String, String> params) throws IOException {
 
         StringBuilder response = new StringBuilder();
-        String urlSpec = "http://172.27.211.7:8080/Server4android/Search.do";//"http://172.27.207.10:8080/Server4android/Search.do";
+        String urlSpec = "http://172.27.211.7:8080/Server4android/Search.do";
         URL url = new URL(urlSpec);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setDoOutput(true);
@@ -52,12 +50,8 @@ public class ConnectTask extends AsyncTask<HashMap<String, String>, String, Bool
 
         DataOutputStream out = new DataOutputStream(connection
                 .getOutputStream());
-        Log.d("test", "初始化呢完成!");
-
         StringBuilder content = new StringBuilder();
-
         Iterator i = params.entrySet().iterator();
-
         while (i.hasNext()) {
             Map.Entry entry = (java.util.Map.Entry) i.next();
             content.append("&" + entry.getKey() + "=" + entry.getValue());
@@ -67,8 +61,6 @@ public class ConnectTask extends AsyncTask<HashMap<String, String>, String, Bool
 
         out.flush();
         out.close();
-
-//-----------------------------------------------------------------------------
         try {
             BufferedReader reader = new BufferedReader(new
                     InputStreamReader(connection.getInputStream()));
@@ -85,7 +77,7 @@ public class ConnectTask extends AsyncTask<HashMap<String, String>, String, Bool
             connection.disconnect();
         }
         return response.toString();
-//----------------------------------------------------------------------------
+
     }
 
 }
