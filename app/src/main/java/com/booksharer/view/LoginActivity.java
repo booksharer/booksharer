@@ -9,11 +9,15 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import com.booksharer.R;
 import com.booksharer.util.HttpUtil;
@@ -45,6 +49,17 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         initView();
         populateAutoComplete();
+        final CheckBox cbDisplayPassword = (CheckBox) super.findViewById(R.id.DisplayPassword);
+        cbDisplayPassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    mPasswordView.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                }else{
+                    mPasswordView.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                }
+            }
+        } );
     }
 
     private void populateAutoComplete() {
