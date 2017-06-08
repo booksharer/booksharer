@@ -95,7 +95,8 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.tab_post_icon).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "发布", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(MainActivity.this, AddCommunityActivity.class);
+                startActivity(intent);
             }
         });
     }  /**

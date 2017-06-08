@@ -33,4 +33,8 @@
     <string name="verification_code">验证码</string>
     <string name="nickname">昵称</string>
     <string name="get_verification_code">获取验证码</string>
+    <string name="community_name">书圈名</string>
+    <string name="community_desc">请描述你的书圈</string>
+    <string name="add_community">新建书圈</string>
+
 </resources>

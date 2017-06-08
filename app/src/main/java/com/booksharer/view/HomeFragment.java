@@ -123,7 +123,7 @@ public class HomeFragment extends Fragment {
                             for (int i = 0; i < 3; i++) {
                                 BookCommunity bookCommunity = new BookCommunity ();
                                 bookCommunity.setId( i);
-                                bookCommunity.setCommunityName("Crime #" + i + loadCount*10);
+                                bookCommunity.setCommunityName("书圈 #" + i + loadCount*10);
                                 bookCommunity.setCommunityPeopleNum(i*5+2);
                                 bookCommunity.setCommunityLogo("url");
                                 mBookCommunities.add(bookCommunity);
