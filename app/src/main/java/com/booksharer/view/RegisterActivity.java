@@ -77,7 +77,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnFocusC
                 } else if (!RegexUtils.checkPhoneNum(phone)) {
                     mPhoneView.setError(getString(R.string.error_invalid_phone));
                     return;
-                } else if (!isPhoneExist(phone)) {
+                } else if (isPhoneExist(phone)) {
                     mPhoneView.setError(getString(R.string.error_repeated_phone));
                     return;
                 }
@@ -161,7 +161,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnFocusC
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
+        if (TextUtils.isEmpty(password) || !isPasswordValid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
@@ -174,7 +174,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnFocusC
         }
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password2) && !isPasswordValid(password2)) {
+        if (TextUtils.isEmpty(password2) || !isPasswordValid(password2)) {
             mPasswordView2.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView2;
             cancel = true;
@@ -191,7 +191,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnFocusC
             focusView = mPasswordView2;
             cancel = true;
         }
-        if (!TextUtils.isEmpty(verificationCode) && !TextUtils.isEmpty(phone)) {
+        if (TextUtils.isEmpty(verificationCode) || TextUtils.isEmpty(phone)) {
             mVerificationCode.setError(getString(R.string.error_field_required));
             focusView = mVerificationCode;
             cancel = true;
