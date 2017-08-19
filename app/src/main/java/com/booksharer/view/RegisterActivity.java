@@ -24,6 +24,7 @@ import okhttp3.Response;
 import com.booksharer.R;
 import com.booksharer.util.HttpUtil;
 import com.booksharer.util.MyApplication;
+import com.booksharer.util.RegexUtils;
 import com.booksharer.util.Utility;
 
 import java.io.IOException;
@@ -73,7 +74,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnFocusC
                 if (TextUtils.isEmpty(phone)) {
                     mPhoneView.setError(getString(R.string.error_field_required));
                     return;
-                } else if (!isPhoneValid(phone)) {
+                } else if (!RegexUtils.checkPhoneNum(phone)) {
                     mPhoneView.setError(getString(R.string.error_invalid_phone));
                     return;
                 } else if (!isPhoneExist(phone)) {
@@ -166,9 +167,21 @@ public class RegisterActivity extends AppCompatActivity implements View.OnFocusC
             cancel = true;
         }
 
+        if (!RegexUtils.checkPassword(password)) {
+            mPasswordView.setError(getString(R.string.error_invalid_password_form));
+            focusView = mPasswordView;
+            cancel = true;
+        }
+
         // Check for a valid password, if the user entered one.
         if (!TextUtils.isEmpty(password2) && !isPasswordValid(password2)) {
             mPasswordView2.setError(getString(R.string.error_invalid_password));
+            focusView = mPasswordView2;
+            cancel = true;
+        }
+
+        if (!RegexUtils.checkPassword(password)) {
+            mPasswordView2.setError(getString(R.string.error_invalid_password_form));
             focusView = mPasswordView2;
             cancel = true;
         }
@@ -265,10 +278,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnFocusC
         });
     }
 
-    private boolean isPhoneValid(String phone) {
-        String telRegex = "[1][358]\\d{9}";// "[1]"代表第1位为数字1，"[358]"代表第二位可以为3、5、8中的一个，"\\d{9}"代表后面是可以是0～9的数字，有9位。
-        return !TextUtils.isEmpty(phone) && phone.matches(telRegex);
-    }
+//    private boolean isPhoneValid(String phone) {
+//        String telRegex = "[1][358]\\d{9}";// "[1]"代表第1位为数字1，"[358]"代表第二位可以为3、5、8中的一个，"\\d{9}"代表后面是可以是0～9的数字，有9位。
+//        return !TextUtils.isEmpty(phone) && phone.matches(telRegex);
+//    }
 
     private boolean isPhoneExist(String phone) {
         final boolean[] state = {false};
@@ -297,10 +310,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnFocusC
         return state[0];
     }
 
-    private boolean isUserNameValid(String userName) {
-        //TODO: Replace this with your own logic
-        return userName.matches("[a-zA-Z][a-zA-Z0-9]{3,15}");
-    }
+//    private boolean isUserNameValid(String userName) {
+//        //TODO: Replace this with your own logic
+//        return userName.matches("[a-zA-Z][a-zA-Z0-9]{3,15}");
+//    }
 
     private void isUserNameExist(String userName) {
         //TODO: Replace this with your own logic
@@ -377,7 +390,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnFocusC
                     // Check for a valid userName
                     if (TextUtils.isEmpty(userName)) {
                         mUserNameView.setError(getString(R.string.error_field_required));
-                    } else if (!isUserNameValid(userName)) {
+                    } else if (!RegexUtils.checkUsername(userName)) {
                         mUserNameView.setError(getString(R.string.error_invalid_user_name));
                     } else {
                         isUserNameExist(userName);
