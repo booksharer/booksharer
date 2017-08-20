@@ -2,6 +2,7 @@ package com.booksharer.view;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -38,25 +39,30 @@ public class AddCommunityActivity extends AppCompatActivity {
 
     private void initView() {
         mNextButton = (Button) findViewById(R.id.next);
+        Log.d("test","debug");
         mNextButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 setContentView(R.layout.step2);
+                mAddCommunityButton = (Button) findViewById(R.id.add_community_button);
+                mAddCommunityButton.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        addCommunity();
+                    }
+                });
+                mCommunityName = (EditText) findViewById(R.id.community_name);
+                mCommunityDesc = (EditText) findViewById(R.id.community_desc);
+                mCommunityOwnerName = (TextView) findViewById(R.id.community_owner_name);
+                mCommunityOwnerName.setText("somebody");
+                //TODO
+                // mCommunityOwnerName.setText(MyApplication.getUser().getUserName());
+                mCommunityPosition = (TextView) findViewById(R.id.community_position);
+                mCommunityPosition.setText(MyApplication.getArea());
+
             }
         });
-        mAddCommunityButton = (Button) findViewById(R.id.add_community_button);
-        mAddCommunityButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addCommunity();
-            }
-        });
-        mCommunityName = (EditText) findViewById(R.id.community_name);
-        mCommunityDesc = (EditText) findViewById(R.id.community_desc);
-        mCommunityOwnerName = (TextView) findViewById(R.id.community_owner_name);
-        mCommunityOwnerName.setText(MyApplication.getUser().getUserName());
-        mCommunityPosition = (TextView) findViewById(R.id.community_position);
-        mCommunityPosition.setText(MyApplication.getArea());
+
     }
 
     private void addCommunity() {

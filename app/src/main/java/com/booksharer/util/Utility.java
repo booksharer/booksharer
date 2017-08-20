@@ -1,6 +1,7 @@
 package com.booksharer.util;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.booksharer.entity.BookCommunity;
@@ -175,7 +176,7 @@ public class Utility {
                 JSONObject jsonObject = new JSONObject(response);
                 if (jsonObject.getInt("state") == 0) {
                     Gson gson = new Gson();
-                    List<BookCommunity> bookCommunities = gson.fromJson(jsonObject.getJSONObject("data").toString(), new TypeToken<List<BookCommunity>>(){}.getType());
+                    List<BookCommunity> bookCommunities = gson.fromJson(jsonObject.getJSONArray("data").toString(), new TypeToken<List<BookCommunity>>(){}.getType());
                     BookCommunityLab.get(MyApplication.getContext()).appendBookCommunities(bookCommunities);
                     return true;
                 } else

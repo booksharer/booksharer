@@ -39,7 +39,7 @@ public class MyApplication extends Application{
 
     public static void setUrl_api(String api, Map<String, String> params) {
         StringBuilder stringBuilder = new StringBuilder(url);
-        stringBuilder.append(url_api).append("?");
+        stringBuilder.append(api).append("?");
 
         Iterator i = params.entrySet().iterator();
         while (i.hasNext()) {
