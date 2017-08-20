@@ -144,7 +144,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnFocusC
             showProgress(true);
             register();
             //跳转
-            Intent intent = new Intent(RegisterActivity.this, MineFragment.class);
+            Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
             startActivity(intent);
             finish();
         }
