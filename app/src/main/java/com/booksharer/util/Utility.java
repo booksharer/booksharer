@@ -1,6 +1,7 @@
 package com.booksharer.util;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.booksharer.entity.BookCommunity;
@@ -18,6 +19,7 @@ import java.util.List;
  * Created by DELL on 2016/8/18.
  */
 public class Utility {
+    private static final String TAG="Utility";
     /**
      * 解析查重结果
      *
@@ -40,10 +42,13 @@ public class Utility {
         if (!TextUtils.isEmpty(response)) {
             try {
                 JSONObject jsonObject = new JSONObject(response);
-                if (jsonObject.getInt("state") == 0)
+                if (jsonObject.getInt("state") == 0){
+                    Log.d(TAG, String.valueOf(jsonObject.getInt("state")));
                     return true;
+                }
                 else
-                    Toast.makeText(MyApplication.getContext(), jsonObject.getString("desc"), Toast.LENGTH_SHORT).show();
+                    Log.d(TAG,jsonObject.getString("desc"));
+//                    Toast.makeText(MyApplication.getContext(), jsonObject.getString("desc"), Toast.LENGTH_SHORT).show();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -56,10 +61,22 @@ public class Utility {
         if (!TextUtils.isEmpty(response)) {
             try {
                 JSONObject jsonObject = new JSONObject(response);
-                if (jsonObject.getInt("state") == 0)
+                if (jsonObject.getInt("state") == 0){
+                    JSONObject userData = new JSONObject(jsonObject.getString("data"));
+                    User user = new User();
+                    user.setUserName(userData.getString("userName"));
+                    user.setEmail(userData.getString("email"));
+                    user.setPhone(userData.getString("phone"));
+                    user.setPassword(userData.getString("password"));
+                    user.setNickName(userData.getString("nickName"));
+                    MyApplication.setUser(user);
+                    Log.d(TAG, String.valueOf(jsonObject.getInt("state")));
+                    Log.d(TAG,user.toString());
                     return true;
+                }
                 else
-                    Toast.makeText(MyApplication.getContext(), jsonObject.getString("desc"), Toast.LENGTH_SHORT).show();
+                    Log.d(TAG,jsonObject.getString("desc"));
+//                    Toast.makeText(MyApplication.getContext(), jsonObject.getString("desc"), Toast.LENGTH_SHORT).show();
             } catch (JSONException e) {
                 e.printStackTrace();
             }

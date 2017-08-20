@@ -3,10 +3,10 @@ package com.booksharer.view;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -15,15 +15,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
-
-import cn.smssdk.EventHandler;
-import cn.smssdk.SMSSDK;
-import cn.smssdk.gui.RegisterPage;
 import okhttp3.Call;
 import okhttp3.Response;
 
 import com.booksharer.R;
+import com.booksharer.entity.User;
 import com.booksharer.util.HttpUtil;
 import com.booksharer.util.MyApplication;
 import com.booksharer.util.RegexUtils;
@@ -37,8 +33,8 @@ import java.util.HashMap;
  */
 public class RegisterActivity extends AppCompatActivity implements View.OnFocusChangeListener {
 
-    private static final String APPKEY = "165330232451a";
-    private static final String APPSECRET = "478eaddde32096a52c888c7cbecd669f";
+//    private static final String APPKEY = "165330232451a";
+//    private static final String APPSECRET = "478eaddde32096a52c888c7cbecd669f";
 
     // UI references.
     private EditText mUserNameView;
@@ -47,13 +43,19 @@ public class RegisterActivity extends AppCompatActivity implements View.OnFocusC
     private EditText mNicknameView;
     private View mProgressView;
     private View mSignUpFormView;
-    private String phoneNum;
+    private static String phoneNum;
+    private static final String TAG="RegisterActivity";
     int i = 30;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+//        使用验证码获得手机号码
+        Intent intent=getIntent();
+        phoneNum = intent.getStringExtra("phone");
+        Log.d(TAG,phoneNum);
+        isPhoneAvailable(phoneNum);
         initView();
     }
 
@@ -73,25 +75,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnFocusC
         });
         mSignUpFormView = findViewById(R.id.sign_up_form);
         mProgressView = findViewById(R.id.sign_up_progress);
-
-        RegisterPage registerPage = new RegisterPage();
-        registerPage.setRegisterCallback(new EventHandler() {
-            public void afterEvent(int event, int result, Object data) {
-                // 解析注册结果
-                if (result == SMSSDK.RESULT_COMPLETE) {
-                    @SuppressWarnings("unchecked") HashMap<String, Object> phoneMap = (HashMap<String, Object>) data;
-                    String country = (String) phoneMap.get("country");
-                    String phone = (String) phoneMap.get("phone");
-                    phoneNum = phone;
-                }
-            }
-        });
-        //check repeat phone
-        registerPage.show(RegisterActivity.this);
-
-        ////注册回调
-        SMSSDK.initSDK(RegisterActivity.this, APPKEY, APPSECRET);
-        SMSSDK.registerEventHandler(eventHandler);
     }
 
 
@@ -106,12 +89,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnFocusC
         mUserNameView.setError(null);
         mPasswordView.setError(null);
         mPasswordView2.setError(null);
+        mNicknameView.setError(null);
 
         // Store values at the time of the login attempt.
 
         String password = mPasswordView.getText().toString();
         String password2 = mPasswordView2.getText().toString();
-
+        String nickname = mNicknameView.getText().toString();
         boolean cancel = false;
         View focusView = null;
 
@@ -146,6 +130,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnFocusC
             focusView = mPasswordView2;
             cancel = true;
         }
+
+        if(TextUtils.isEmpty(nickname)){
+            mNicknameView.setError(getString(R.string.error_field_required));
+            focusView = mNicknameView;
+            cancel = true;
+        }
         if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
@@ -154,38 +144,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnFocusC
             showProgress(true);
             register();
             //跳转
+            Intent intent = new Intent(RegisterActivity.this, MineFragment.class);
+            startActivity(intent);
             finish();
         }
     }
-
-    //防止内存泄漏
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        SMSSDK.unregisterEventHandler(eventHandler);
-    }
-
-    private EventHandler eventHandler = new EventHandler() {
-        @Override
-        public void afterEvent(int event, int result, Object data) {
-            super.afterEvent(event, result, data);
-            if (result == SMSSDK.RESULT_COMPLETE) {
-                //回调完成
-                if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {
-//                    showProgress(true);
-//                    register();
-//                    //跳转
-//                    finish();
-                } else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE) {
-                    //获取验证码成功
-                } else if (event == SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES) {
-                    //返回支持发送验证码的国家列表
-                }
-            } else {
-                ((Throwable) data).printStackTrace();
-            }
-        }
-    };
 
     private void register() {
         //向服务器传送数据
@@ -193,8 +156,16 @@ public class RegisterActivity extends AppCompatActivity implements View.OnFocusC
         map.put("userName", mUserNameView.getText().toString());
         map.put("password", mPasswordView.getText().toString());
         map.put("phone", phoneNum);
-        map.put("nickname", mNicknameView.getText().toString());
+        map.put("nickName", mNicknameView.getText().toString());
         map.put("position", PreferenceManager.getDefaultSharedPreferences(this).getString("position", "0.0,0.0"));
+
+        final User user = new User();
+        user.setUserName(mUserNameView.getText().toString());
+        user.setPassword(mPasswordView.getText().toString());
+        user.setPhone(phoneNum);
+        user.setNickName(mNicknameView.getText().toString());
+        user.setPosition(PreferenceManager.getDefaultSharedPreferences(this).getString("position", "0.0,0.0"));
+        MyApplication.setUser(user);
         MyApplication.setUrl_api("/user/register");
         HttpUtil.sendOkHttpPost(MyApplication.getUrl_api(), map, new okhttp3.Callback() {
             @Override
@@ -212,22 +183,19 @@ public class RegisterActivity extends AppCompatActivity implements View.OnFocusC
                             mPasswordView.getText().clear();
                             mPasswordView2.getText().clear();
                             mNicknameView.getText().clear();
+                            Intent intent = new Intent(RegisterActivity.this, MineFragment.class);
+                            startActivity(intent);
                         }
                     });
                 } else {
-                    Toast.makeText(MyApplication.getContext(), "注册成功", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG,"注册未成功");
+//                    Toast.makeText(MyApplication.getContext(), "注册成功", Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
 
-//    private boolean isPhoneValid(String phone) {
-//        String telRegex = "[1][358]\\d{9}";// "[1]"代表第1位为数字1，"[358]"代表第二位可以为3、5、8中的一个，"\\d{9}"代表后面是可以是0～9的数字，有9位。
-//        return !TextUtils.isEmpty(phone) && phone.matches(telRegex);
-//    }
-
-    private boolean isPhoneExist(String phone) {
-        final boolean[] state = {false};
+    private boolean isPhoneAvailable(String phone) {
         //TODO: Replace this with your own logic
         MyApplication.setUrl_api("/user/findrepeate?phone=" + phone);
         HttpUtil.sendOkHttpRequest(MyApplication.getUrl_api(), new okhttp3.Callback() {
@@ -242,21 +210,37 @@ public class RegisterActivity extends AppCompatActivity implements View.OnFocusC
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-
+                            new AlertDialog.Builder(RegisterActivity.this)
+                                    .setTitle("系统提示")//设置对话框标题
+                                    .setMessage("该手机号已经注册，是否直接登录？")
+                                    .setPositiveButton("确定",new DialogInterface.OnClickListener() {//添加确定按钮
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {//确定按钮的响应事件
+                                            // TODO Auto-generated method stub
+                                            Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                                            intent.putExtra("phone", phoneNum);
+                                            startActivity(intent);
+                                            finish();
+                                        }
+                                    })
+                                    .setNegativeButton("返回",new DialogInterface.OnClickListener() {//添加返回按钮
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {//响应事件
+                                            // TODO Auto-generated method stub
+                                            Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                                            startActivity(intent);
+                                            finish();
+                                        }
+                                    }).show();//在按键响应事件中显示此对话框  //设置显示的内容
                         }
                     });
                 }
             }
         });
-        return state[0];
+        return true;
     }
 
-//    private boolean isUserNameValid(String userName) {
-//        //TODO: Replace this with your own logic
-//        return userName.matches("[a-zA-Z][a-zA-Z0-9]{3,15}");
-//    }
-
-    private void isUserNameExist(String userName) {
+    private boolean isUserNameAvailable(String userName) {
         //TODO: Replace this with your own logic
         MyApplication.setUrl_api("/user/findrepeate?userName=" + userName);
         HttpUtil.sendOkHttpRequest(MyApplication.getUrl_api(), new okhttp3.Callback() {
@@ -279,6 +263,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnFocusC
                 }
             }
         });
+        return true;
     }
 
     private boolean isPasswordValid(String password) {
@@ -334,7 +319,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnFocusC
                     } else if (!RegexUtils.checkUsername(userName)) {
                         mUserNameView.setError(getString(R.string.error_invalid_user_name));
                     } else {
-                        isUserNameExist(userName);
+                        if(!isUserNameAvailable(userName)){
+                            mUserNameView.setError(getString(R.string.error_repeated_user_name));
+                            mUserNameView.requestFocus();
+                        }
                     }
                     break;
             }

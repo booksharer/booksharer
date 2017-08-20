@@ -363,7 +363,8 @@ public class HomeFragment extends Fragment {
                         //显示
                         updateUI();
                     } else {
-                        Toast.makeText(view.getContext(), "网络故障", Toast.LENGTH_SHORT).show();
+                        Log.d("NetWork","网络故障");
+//                        Toast.makeText(view.getContext(), "网络故障", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
