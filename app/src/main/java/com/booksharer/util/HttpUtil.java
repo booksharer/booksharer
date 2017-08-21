@@ -1,6 +1,8 @@
 package com.booksharer.util;
 
 
+import android.util.Log;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -53,6 +55,7 @@ public class HttpUtil {
 //    }
 
     public static void sendOkHttpRequest(final String address, final Callback callback) {
+        Log.d("test",address);
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(address)

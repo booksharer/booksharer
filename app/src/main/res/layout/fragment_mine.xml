@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical"
-    tools:ignore="ContentDescription">
+    tools:ignore="ContentDescription"
+    android:paddingTop="20dp">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -48,7 +49,8 @@
                         android:layout_alignParentLeft="true"
                         android:gravity="center_vertical"
                         android:text="账号余额：0元"
-                        android:textSize="16dp"/>
+                        android:textSize="16dp"
+                        android:paddingBottom="10dp"/>
                 </LinearLayout>
 
 
@@ -59,7 +61,7 @@
             <View
                 style="@style/Blank"
                 android:layout_width="match_parent"
-                android:layout_height="15dp"
+                android:layout_height="10dp"
                 />
 
             <LinearLayout style="@style/common_horizontal_division_line_style"/>
@@ -206,7 +208,7 @@
             <View
                 style="@style/Blank"
                 android:layout_width="match_parent"
-                android:layout_height="15dp"
+                android:layout_height="10dp"
                 />
 
             <LinearLayout style="@style/common_horizontal_division_line_style"/>
@@ -352,7 +354,7 @@
             <View
                 style="@style/Blank"
                 android:layout_width="match_parent"
-                android:layout_height="15dp"
+                android:layout_height="10dp"
                 />
 
             <LinearLayout style="@style/common_horizontal_division_line_style"/>
@@ -394,7 +396,7 @@
             <View
                 style="@style/Blank"
                 android:layout_width="match_parent"
-                android:layout_height="15dp"
+                android:layout_height="10dp"
                 />
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
