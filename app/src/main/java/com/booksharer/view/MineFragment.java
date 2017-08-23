@@ -46,9 +46,8 @@ import java.io.IOException;
 
 public class MineFragment extends Fragment implements View.OnClickListener {
 
-    private View userView;
+    private View userView, credit_card, allBookView;
     private TextView name;
-    private View credit_card;
     private static View view;
     private static User user = MyApplication.getUser();
 
@@ -262,6 +261,14 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                 }
             });
         }
+        allBookView = view.findViewById(R.id.allMyBook);
+        allBookView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), UserBookInfo.class);
+                startActivity(intent);
+            }
+        });
     }
 
 

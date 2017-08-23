@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">书圈</string>
     <string name="mine">我的</string>
+    <string name="allBook">我的书籍</string>
     <string name="allLend">我的借出</string>
     <string name="allBorrow">我的借入</string>
     <string name="more">查看更多</string>

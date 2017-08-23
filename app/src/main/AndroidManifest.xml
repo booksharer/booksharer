@@ -93,7 +93,7 @@
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"
-            android:process=":remote"></service>
+            android:process=":remote" />
         <service android:name=".service.LocationService" />
 
         <activity android:name=".view.MainActivity">
@@ -122,7 +122,7 @@
             android:name="com.mob.tools.MobUIShell"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            android:windowSoftInputMode="stateHidden|adjustResize"></activity>
+            android:windowSoftInputMode="stateHidden|adjustResize" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -134,7 +134,8 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <activity android:name=".view.MyInfoActivity"></activity>
+        <activity android:name=".view.MyInfoActivity" />
+        <activity android:name=".view.UserBookInfo"></activity>
     </application>
 
 </manifest>
