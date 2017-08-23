@@ -50,7 +50,6 @@
                     android:paddingTop="5dp"
                     android:text="个人信息"
                     android:textAlignment="center" />
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -68,10 +67,19 @@
 
                         <TextView
                             style="@style/Font16"
+                            android:layout_width="20dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:layout_weight="0.2"
+                            android:text="用户名" />
+
+                        <TextView
+                            style="@style/Font16"
+                            android:id="@+id/username"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="10dp"
-                            android:text="用户名" />
+                            android:layout_weight="0.8"/>
 
                     </LinearLayout>
 
@@ -83,11 +91,21 @@
                         android:layout_marginBottom="5dp">
 
                         <TextView
+                            android:id="@+id/textView"
                             style="@style/Font16"
-                            android:layout_width="match_parent"
+                            android:layout_width="20dp"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="10dp"
-                            android:text="手机"></TextView>
+                            android:layout_weight="0.2"
+                            android:text="手机" />
+
+                        <TextView
+                            style="@style/Font16"
+                            android:id="@+id/phone"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:layout_weight="0.8"/>
                     </LinearLayout>
 
                     <LinearLayout
@@ -99,10 +117,19 @@
 
                         <TextView
                             style="@style/Font16"
-                            android:layout_width="match_parent"
+                            android:layout_width="20dp"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="5dp"
-                            android:text="昵称"></TextView>
+                            android:layout_weight="0.2"
+                            android:text="昵称"/>
+
+                        <TextView
+                            style="@style/Font16"
+                            android:id="@+id/nickname"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:layout_weight="0.8"/>
                     </LinearLayout>
 
 
@@ -136,6 +163,7 @@
                     android:weightSum="1">
 
                     <LinearLayout
+                        android:id="@+id/mybook"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
@@ -159,6 +187,7 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/mybookout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
@@ -181,6 +210,7 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/mybookin"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
@@ -208,6 +238,7 @@
 
             </LinearLayout>
             <LinearLayout
+                android:id="@+id/mybookcircle"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="10dp"
