@@ -74,9 +74,12 @@ public class Utility {
                     Log.d(TAG,user.toString());
                     return true;
                 }
-                else
+                else{
+//                    JSONObject userData = new JSONObject(jsonObject.getString("data"));
                     Log.d(TAG,jsonObject.getString("desc"));
 //                    Toast.makeText(MyApplication.getContext(), jsonObject.getString("desc"), Toast.LENGTH_SHORT).show();
+                }
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }

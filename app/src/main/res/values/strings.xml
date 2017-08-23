@@ -25,6 +25,7 @@
     <string name="action_sign_in">登陆</string>
     <string name="action_sign_up">注册</string>
     <string name="action_sign_in_short">登陆</string>
+    <string name="action_sign_in_success">登陆成功</string>
     <string name="error_invalid_user_name">用户名太短</string>
     <string name="error_invalid_user_name_phone">用户名太短或手机号不正确</string>
     <string name="error_repeated_user_name">用户名已存在</string>
