@@ -2,6 +2,7 @@ package com.booksharer.view;
 
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.ContentUris;
 import android.content.Intent;
@@ -35,6 +36,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.booksharer.R;
+import com.booksharer.entity.User;
+import com.booksharer.util.MyApplication;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -43,10 +46,11 @@ import java.io.IOException;
 
 public class MineFragment extends Fragment implements View.OnClickListener {
 
-    private View user;
+    private View userView;
     private TextView name;
     private View credit_card;
-    private View view;
+    private static View view;
+    private static User user = MyApplication.getUser();
 
 
     private static final int REQUEST_POLICY = 1;
@@ -173,19 +177,8 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-
-//        String sname = preferences.getString("name", "用户名");
-        //显示用户名
         view = inflater.inflate(R.layout.fragment_mine, container, false);
-        name = (TextView)view.findViewById(R.id.name);
-        name.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), LoginActivity.class);
-                startActivity(intent);
-            }
-        });
-
+        initView(view);
         Button takePhoto = (Button)view.findViewById(R.id.take_photo);
         Button choosePhotoFromAlbum = (Button)view.findViewById(R.id.choose_photo_from_album);
         picture = (ImageView)view.findViewById(R.id.picture);
@@ -225,18 +218,6 @@ public class MineFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-
-        //name.setText(sname);
-
-//        user = view.findViewById(R.id.username);
-//        user.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(getActivity(), MyInfoActivity.class);
-//                startActivity(intent);
-//            }
-//        });
-
         AppCompatActivity activity = (AppCompatActivity) getActivity();
 
 
@@ -254,6 +235,33 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
+        initView(view);
+    }
+
+
+    private void initView(View view) {
+        user = MyApplication.getUser();
+        name = (TextView) view.findViewById(R.id.name);
+        if(user != null){
+            String sname = user.getUserName();
+            name.setText(sname);
+            name.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getActivity(), MyInfoActivity.class);
+                    startActivity(intent);
+                }
+            });
+        }else{
+            name.setText("请登录");
+            name.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getActivity(), LoginActivity.class);
+                    startActivity(intent);
+                }
+            });
+        }
     }
 
 

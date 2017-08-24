@@ -37,6 +37,11 @@
         <item name="android:textColor">#808080</item>
     </style>
 
+    <style name="FontHint">
+        <item name="android:textSize">14dp</item>
+        <item name="android:textColor">#4d4b4b</item>
+    </style>
+
     <style name="MyTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorPrimary</item>

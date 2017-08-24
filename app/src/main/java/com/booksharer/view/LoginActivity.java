@@ -3,14 +3,18 @@ package com.booksharer.view;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
@@ -19,6 +23,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Toast;
+
 import com.booksharer.R;
 import com.booksharer.util.HttpUtil;
 import com.booksharer.util.MyApplication;
@@ -26,6 +32,10 @@ import com.booksharer.util.Utility;
 
 import java.io.IOException;
 import java.util.HashMap;
+
+import cn.smssdk.EventHandler;
+import cn.smssdk.SMSSDK;
+import cn.smssdk.gui.RegisterPage;
 import okhttp3.Call;
 import okhttp3.Response;
 
@@ -38,10 +48,14 @@ public class LoginActivity extends AppCompatActivity {
      */
 
     // UI references.
+    private static final String APPKEY = "165330232451a";
+    private static final String APPSECRET = "478eaddde32096a52c888c7cbecd669f";
     private AutoCompleteTextView mUserNameView;
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private static String phoneNum;
+    private static final String TAG="LoginActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,17 +99,64 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
         Button mSignUpButton = (Button) findViewById(R.id.sign_up_button);
+//       点击注册完成手机验证码步骤
         mSignUpButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-                startActivity(intent);
+                final RegisterPage registerPage = new RegisterPage();
+                registerPage.setRegisterCallback(new EventHandler() {
+                    public void afterEvent(int event, int result, Object data) {
+                        // 解析注册结果
+                        if (result == SMSSDK.RESULT_COMPLETE) {
+                            @SuppressWarnings("unchecked") HashMap<String, Object> phoneMap = (HashMap<String, Object>) data;
+                            String country = (String) phoneMap.get("country");
+                            String phone = (String) phoneMap.get("phone");
+                            phoneNum = phone;
+                            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                            intent.putExtra("phone", phoneNum);
+                            startActivity(intent);
+                        }else{
+                            finish();
+                        }
+                    }
+                }
+                );
+                registerPage.show(LoginActivity.this);
+
+                ////注册回调
+                SMSSDK.initSDK(LoginActivity.this, APPKEY, APPSECRET);
+                SMSSDK.registerEventHandler(eventHandler);
             }
         });
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
     }
 
+    //防止内存泄漏
+//    @Override
+//    protected void onDestroy() {
+//        super.onDestroy();
+//        SMSSDK.unregisterEventHandler(eventHandler);
+//    }
+
+    private EventHandler eventHandler = new EventHandler() {
+        @Override
+        public void afterEvent(int event, int result, Object data) {
+            super.afterEvent(event, result, data);
+            if (result == SMSSDK.RESULT_COMPLETE) {
+                //回调完成
+                if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {
+
+                } else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE) {
+                    //获取验证码成功
+                } else if (event == SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES) {
+                    //返回支持发送验证码的国家列表
+                }
+            } else {
+                ((Throwable) data).printStackTrace();
+            }
+        }
+    };
 
     /**
      * Attempts to sign in or register the account specified by the login form.
@@ -141,6 +202,7 @@ public class LoginActivity extends AppCompatActivity {
             HashMap<String, String> map = new HashMap<>();
             map.put("uniqueAccount", mUserNameView.getText().toString());
             map.put("password", mPasswordView.getText().toString());
+
             MyApplication.setUrl_api("/user/login");
             HttpUtil.sendOkHttpPost(MyApplication.getUrl_api(), map, new okhttp3.Callback() {
                 @Override
@@ -152,11 +214,24 @@ public class LoginActivity extends AppCompatActivity {
                 public void onResponse(Call call, Response response) throws IOException {
                     String responseData = response.body().string();
                     if (Utility.handleLoginResponse(responseData)) {
-                        finish();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(MyApplication.getContext(), R.string.action_sign_in_success, Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+                        });
                     }else{
-                        mPasswordView.getText().clear();
-                        mPasswordView.setError(getString(R.string.error_incorrect_user));
-                        mPasswordView.requestFocus();
+                        Log.d(TAG,getString(R.string.error_incorrect_user));
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                showProgress(false);
+                                mPasswordView.getText().clear();
+                                mPasswordView.setError(getString(R.string.error_incorrect_user));
+                                mPasswordView.requestFocus();
+                            }
+                        });
                     }
                 }
             });

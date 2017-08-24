@@ -370,8 +370,9 @@ public class HomeFragment extends Fragment {
                         });
 
                     } else {
-                        Log.d("test", "网络故障");
-                        //Toast.makeText(view.getContext(), "网络故障", Toast.LENGTH_SHORT).show();
+                        Log.d("NetWork","网络故障");
+//                        Toast.makeText(view.getContext(), "网络故障", Toast.LENGTH_SHORT).show();
+
                     }
                 }
             });

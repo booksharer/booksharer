@@ -1,4 +1,6 @@
 package com.booksharer.util;
+import android.util.Log;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -10,7 +12,7 @@ public class RegexUtils {
 
         /**
          * 验证Username
-         * @param username password，格式：只允许数字与字母
+         * @param username，格式：只允许数字与字母
          * @return 验证成功返回true，验证失败返回false
          */
         public static boolean checkUsername(String username){
@@ -24,7 +26,9 @@ public class RegexUtils {
      * @return 验证成功返回true，验证失败返回false
      */
     public static boolean checkPassword(String pwd){
-        String regex = "[^a-zA-Z0-9]";
+//        String regex = "/^[a-zA-Z0-9]{5,15}$/";
+        String regex = "[a-zA-Z0-9]{4,15}";
+        System.out.println(Pattern.matches(regex, pwd));
         return Pattern.matches(regex, pwd);
     }
 
