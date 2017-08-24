@@ -44,8 +44,14 @@
     <string name="get_verification_code">获取验证码</string>
     <string name="submit_verification_code">提交验证码</string>
     <string name="error_invalid_phone_verification_code">手机和验证码不能为空</string>
+
+    <!-- Strings related to community -->
+
     <string name="community_name">书圈名</string>
     <string name="community_desc">请描述你的书圈</string>
     <string name="add_community">新建书圈</string>
+    <string name="owner">创建者</string>
+    <string name="community_owner_name">创建者</string>
+    <string name="community_position">位置</string>
 
 </resources>

@@ -44,14 +44,14 @@ public class BookCommunityLab {
 
     private BookCommunityLab(Context context){
         mBookCommunities = new ArrayList<>();
-        for (int i = 0; i < 6; i++) {
-            BookCommunity bookCommunity = new BookCommunity ();
-            bookCommunity.setId( i);
-            bookCommunity.setCommunityName("Crime #" + i);
-            bookCommunity.setCommunityPeopleNum(i*5+2);
-            bookCommunity.setCommunityLogo("url");
-            mBookCommunities.add(bookCommunity);
-        }
+//        for (int i = 0; i < 6; i++) {
+//            BookCommunity bookCommunity = new BookCommunity ();
+//            bookCommunity.setId( i);
+//            bookCommunity.setCommunityName("Crime #" + i);
+//            bookCommunity.setCommunityPeopleNum(i*5+2);
+//            bookCommunity.setCommunityLogo("url");
+//            mBookCommunities.add(bookCommunity);
+//        }
     }
 
 
