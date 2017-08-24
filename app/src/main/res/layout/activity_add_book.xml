@@ -317,7 +317,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
                     android:hint="@string/book_contentIntro_hint"
-                    android:inputType="number"
+                    android:inputType="text"
                     android:maxLines="8"
                     android:singleLine="true"/>
             </android.support.design.widget.TextInputLayout>
@@ -345,7 +345,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
                     android:hint="@string/book_authorIntro_hint"
-                    android:inputType="number"
+                    android:inputType="text"
                     android:maxLines="4"
                     android:singleLine="true"/>
             </android.support.design.widget.TextInputLayout>
