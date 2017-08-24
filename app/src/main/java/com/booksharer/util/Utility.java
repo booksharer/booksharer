@@ -94,10 +94,14 @@ public class Utility {
             try {
                 JSONObject jsonObject = new JSONObject(response);
                 if (jsonObject.getInt("state") == 0) {
+                    Log.d(TAG,jsonObject.getString("data"));
                    // jsonObject.getInt("data");//data返回书本的id信息
                     return true;
-                } else
-                    Toast.makeText(MyApplication.getContext(), jsonObject.getString("desc"), Toast.LENGTH_SHORT).show();
+                } else{
+                    Log.d(TAG,jsonObject.getString("desc"));
+                    Log.d(TAG,jsonObject.getString("data"));
+//                    Toast.makeText(MyApplication.getContext(), jsonObject.getString("desc"), Toast.LENGTH_SHORT).show();
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }

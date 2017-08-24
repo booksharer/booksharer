@@ -26,6 +26,8 @@ import com.booksharer.util.RegexUtils;
 import com.booksharer.util.Utility;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 
 /**
@@ -70,7 +72,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnFocusC
         mSignUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                attemptSignUp();
+                try {
+                    attemptSignUp();
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
             }
         });
         mSignUpFormView = findViewById(R.id.sign_up_form);
@@ -83,7 +89,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnFocusC
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
-    private void attemptSignUp() {
+    private void attemptSignUp() throws UnsupportedEncodingException {
 
         // Reset errors.
         mUserNameView.setError(null);
@@ -150,7 +156,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnFocusC
         }
     }
 
-    private void register() {
+    private void register() throws UnsupportedEncodingException {
         //向服务器传送数据
         HashMap<String, String> map = new HashMap<>();
         map.put("userName", mUserNameView.getText().toString());
@@ -164,6 +170,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnFocusC
         user.setPassword(mPasswordView.getText().toString());
         user.setPhone(phoneNum);
         user.setNickName(mNicknameView.getText().toString());
+//        user.setNickName(URLEncoder.encode(mNicknameView.getText().toString(),"UTF-8"));
         user.setPosition(PreferenceManager.getDefaultSharedPreferences(this).getString("position", "0.0,0.0"));
         MyApplication.setUser(user);
         MyApplication.setUrl_api("/user/register");
