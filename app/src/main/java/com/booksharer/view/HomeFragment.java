@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -32,9 +33,13 @@ import com.booksharer.entity.BookCommunityLab;
 import com.booksharer.service.LocationService;
 import com.booksharer.util.HttpUtil;
 import com.booksharer.util.MyApplication;
+import com.booksharer.util.OkHttpUtil;
 import com.booksharer.util.Utility;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -74,6 +79,7 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d("test","HomeFragment");
         view = inflater.inflate(R.layout.fragment_home, container, false);
         initViewPager();
         city = (TextView) view.findViewById(R.id.city);
@@ -95,7 +101,7 @@ public class HomeFragment extends Fragment {
 
         mRecyclerView = (RecyclerView) view
                 .findViewById(R.id.recycler_view_book_community);
-        //updateUI();
+        updateUI();
         return view;
     }
 
@@ -349,7 +355,7 @@ public class HomeFragment extends Fragment {
             map.put("currentPosition", MyApplication.getPosition());
             map.put("pageIndex", "1");
             map.put("pageSize", "5");
-            MyApplication.setUrl_api("/community/findNear", map);
+            MyApplication.setUrl_api("community/findNear", map);
             HttpUtil.sendOkHttpRequest(MyApplication.getUrl_api(), new okhttp3.Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
@@ -361,6 +367,13 @@ public class HomeFragment extends Fragment {
                     String responseData = response.body().string();
                     Log.d("test", responseData);
                     if (Utility.handleFindNearCommunityResponse(responseData)) {
+                        List<BookCommunity> bookCommunities =  BookCommunityLab.get(MyApplication.getContext()).getBookCommunities();
+                        for ( BookCommunity bookCommunity:
+                             bookCommunities) {
+                            final String logo = bookCommunity.getCommunityLogo();
+                            OkHttpUtil.downloadImage(logo);
+
+                        }
                         //显示
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
