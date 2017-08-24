@@ -135,7 +135,8 @@
         </provider>
 
         <activity android:name=".view.MyInfoActivity" />
-        <activity android:name=".view.UserBookInfo"></activity>
+        <activity android:name=".view.UserBookInfoActivity" />
+        <activity android:name=".view.AddBookActivity"></activity>
     </application>
 
 </manifest>

@@ -31,25 +31,6 @@
                 android:text="图书信息"
                 android:textAlignment="center" />
 
-           <LinearLayout
-               android:layout_width="match_parent"
-               android:layout_height="match_parent"
-               android:orientation="horizontal">
-               <Button
-                   android:id="@+id/addUserBook"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:layout_weight="0.5"
-                   android:text="+" />
-
-               <Button
-                   android:id="@+id/DeleteUserBook"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:layout_weight="0.5"
-                   android:text="_" />
-           </LinearLayout>
-
             <LinearLayout style="@style/common_horizontal_division_line_style">
 
             </LinearLayout>
@@ -71,6 +52,26 @@
                         android:stretchMode="columnWidth"/>
                 </LinearLayout>
               </ScrollView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/addUserBook"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:text="添加" />
+
+                <Button
+                    android:id="@+id/deleteUserBook"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:text="删除" />
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 
