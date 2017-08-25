@@ -248,6 +248,7 @@
                    android:layout_height="match_parent"
                    android:weightSum="1">
                    <Button
+                       android:id="@+id/add_book_pic_btn"
                        style="?android:textAppearanceSmall"
                        android:layout_width="wrap_content"
                        android:layout_height="wrap_content"
@@ -261,10 +262,10 @@
 
                    <ImageView
                        android:id="@+id/book_picture"
-                       android:layout_width="100dp"
+                       android:layout_width="150dp"
                        android:layout_height="100dp"
-                       android:src="@drawable/banana"
-                       android:layout_weight="0.5"/>
+                       android:layout_weight="0.5"
+                       android:src="@drawable/banana" />
                </LinearLayout>
             </LinearLayout>
 
@@ -317,7 +318,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
                     android:hint="@string/book_contentIntro_hint"
-                    android:inputType="number"
+                    android:inputType="text"
                     android:maxLines="8"
                     android:singleLine="true"/>
             </android.support.design.widget.TextInputLayout>
@@ -345,7 +346,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
                     android:hint="@string/book_authorIntro_hint"
-                    android:inputType="number"
+                    android:inputType="text"
                     android:maxLines="4"
                     android:singleLine="true"/>
             </android.support.design.widget.TextInputLayout>

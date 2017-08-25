@@ -14,6 +14,7 @@ import okhttp3.Response;
  * Created by DELL on 2017/8/24.
  */
 public class OkHttpUtil {
+
     public static void downloadImage(final String logo){
         String logo_url = "/sdcard/shuquan/"+logo;
         final File file = new File(logo_url);
@@ -53,3 +54,4 @@ public class OkHttpUtil {
     }
 
 }
+

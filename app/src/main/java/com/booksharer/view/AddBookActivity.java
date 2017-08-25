@@ -4,8 +4,13 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -16,16 +21,20 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.booksharer.R;
 import com.booksharer.entity.BookInfo;
 import com.booksharer.util.HttpUtil;
+import com.booksharer.util.ImageUtil;
 import com.booksharer.util.MyApplication;
+import com.booksharer.util.OkHttpUtil;
 import com.booksharer.util.RegexUtils;
 import com.booksharer.util.Utility;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -38,12 +47,17 @@ public class AddBookActivity extends AppCompatActivity implements View.OnFocusCh
             mBookPublishDateView, mBookPriceView, mBookISBNView,
             mBookContentIntroView, mBookAuthorIntroView;
 
+    private ImageView mBookPicView;
+
     private String mBookTag, mBookZhuangZhen,mFileName;
     private Spinner sTag,sZhuangZhen;
 
-    private Button mAddBookButton;
+    private Button mAddBookButton,mAddBookPicButton;
     private View mProgressView,mAddBookView;
-    private  static final String TAG = "ADDBOOKACTIVITY";
+
+    private static final String TAG = "ADDBOOKACTIVITY";
+    private static int RESULT_LOAD_IMAGE = 1;
+    private static String old_picture_path, new_picture_path;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +106,17 @@ public class AddBookActivity extends AppCompatActivity implements View.OnFocusCh
             }
         });
 
+        mBookPicView = (ImageView) findViewById(R.id.book_picture);
+
+        mAddBookPicButton = (Button) findViewById(R.id.add_book_pic_btn);
+        mAddBookPicButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(i, RESULT_LOAD_IMAGE);
+            }
+        });
+
         mAddBookButton = (Button) findViewById(R.id.confirm_add_book);
         mAddBookButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,6 +126,31 @@ public class AddBookActivity extends AppCompatActivity implements View.OnFocusCh
         });
         mProgressView = findViewById(R.id.sign_up_progress);
         mAddBookView = findViewById(R.id.add_book_form);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
+            Uri selectedImage = data.getData();
+            String[] filePathColumn = { MediaStore.Images.Media.DATA };
+
+            Cursor cursor = getContentResolver().query(selectedImage,
+                    filePathColumn, null, null, null);
+            cursor.moveToFirst();
+
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            old_picture_path = cursor.getString(columnIndex);
+            cursor.close();
+
+            Bitmap mPic = ImageUtil.decodeSampledBitmapFromFilePath(old_picture_path,150,100);
+//            new_picture_path = ImageUtil.compressBmpToFile(mPic);
+//            Bitmap mNewPic = BitmapFactory.decodeFile(new_picture_path);
+            mBookPicView.setImageBitmap(mPic);
+            Log.d(TAG,old_picture_path);
+
+        }
     }
 
     private void attempAddBook() {
@@ -137,7 +187,7 @@ public class AddBookActivity extends AppCompatActivity implements View.OnFocusCh
             focusView = mBookISBNView;
             cancel = true;
         }
-        if (cancel) {
+        if (false) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
             focusView.requestFocus();
@@ -208,65 +258,68 @@ public class AddBookActivity extends AppCompatActivity implements View.OnFocusCh
 
     private void addBook() {
         //向服务器传数据
-        String bookName =  mBookNameView.getText().toString();
-        String author = mBookAuthorView.getText().toString();
-        String publisher = mBookPublisherView.getText().toString();
-        String publishDate =  mBookPublishDateView.getText().toString();
-        String price = mBookPriceView.getText().toString();
-        String contentIntro = mBookContentIntroView.getText().toString();
-        String authorIntro = mBookAuthorIntroView.getText().toString();
-        String tags = mBookTag;
-        String zhuangzhen = mBookZhuangZhen;
-        String isbn = mBookISBNView.getText().toString();
-        String filename = mFileName;
-
+        String test01 = "\\80\\96\\20170825_173204_357.jpg";
+        String test = "/sdcard/shuquan/book_pic/9b71e48a-6973-422d-a23e-901e99f69d5b.jpg";
         HashMap<String, String> map = new HashMap<>();
-        map.put("bookName", bookName);
-        map.put("author", author);
-        map.put("publisher", publisher);
-        map.put("publishDate", publishDate);
-        map.put("price", price);
-        map.put("isbn", isbn);
-        map.put("bookPic",filename);
-        map.put("contentIntro", contentIntro);
-        map.put("authorIntro", authorIntro);
-        map.put("tags", tags);
-        map.put("zhuangZhen", zhuangzhen);
+//        map.put("bookName", mBookNameView.getText().toString());
+//        map.put("author", mBookAuthorView.getText().toString());
+//        map.put("publisher", mBookPublisherView.getText().toString());
+//        map.put("publishDate", mBookPublishDateView.getText().toString());
+//        map.put("price", mBookPriceView.getText().toString());
+//        map.put("isbn", mBookISBNView.getText().toString());
+//        map.put("bookPic",new_picture_path);
+//        map.put("contentIntro", mBookContentIntroView.getText().toString());
+//        map.put("authorIntro", mBookAuthorIntroView.getText().toString());
+//        map.put("tags", mBookTag);
+//        map.put("zhuangZhen", mBookZhuangZhen);
 
+//        map.put("bookName","数理统计");
+//        map.put("author", "施雨");
+//        map.put("publisher", "西安交通大学出版社");
+//        map.put("publishDate", "2005-01-01");
+//        map.put("price", "123元");
+//        map.put("isbn", "123456789");
+//        map.put("bookPic",test);
+//        map.put("contentIntro", "这是一本好书");
+//        map.put("authorIntro", "金龙练了，吴疆没练");
+//        map.put("tags", "文学");
+//        map.put("zhuangZhen", "平装");
 //
-//        final BookInfo book = new BookInfo();
-//        book.setBookName(bookName);
-//        book.setAuthor(author);
-//        book.setPublisher(publisher);
-//        book.setPublishDate(publishDate);
-//        book.setPrice(price);
-//        book.setContentIntro(contentIntro);
-//        book.setAuthorIntro(authorIntro);
-//        book.setTags(tags);
-//        book.setZhuangZhen(zhuangzhen);
-//        book.setIsbn(isbn);
+//        map.put("translateAuthor","文强");
+//        map.put("pageNum","5页");
+//        map.put("congShu","金龙客车丛书");
+//        map.put("menu","自己编吧");
+//
+//        map.put("originName"," ");
+//        map.put("score"," ");
+//
+//        MyApplication.setUrl_api("book/add");
 
-        HttpUtil.sendOkHttpPost(MyApplication.getUrl_api(), map, new okhttp3.Callback(){
-
-            @Override
-            public void onFailure(Call call, IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String responseData = response.body().string();
-                if(Utility.handleAddBookResponse(responseData)){
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-
-                        }
-                    });
-                }else{
-                    Log.d(TAG,"添加未成功");
-                }
-            }
-        });
+//        HttpUtil.sendOkHttpPost(MyApplication.getUrl_api(), map, new okhttp3.Callback(){
+//
+//            @Override
+//            public void onFailure(Call call, IOException e) {
+//
+//            }
+//
+//            @Override
+//            public void onResponse(Call call, Response response) throws IOException {
+//                final String responseData = response.body().string();
+//                if(Utility.handleAddBookResponse(responseData)){
+//                    runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            Log.d(TAG,responseData);
+//
+//                        }
+//                    });
+//                }else{
+//                    Log.d(TAG,responseData);
+//                    Log.d(TAG,"添加未成功");
+//                }
+//            }
+//        });
+        Log.d(TAG,old_picture_path);
+        OkHttpUtil.sendMultipart(old_picture_path);
     }
 }
