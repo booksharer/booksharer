@@ -145,8 +145,9 @@ public class AddBookActivity extends AppCompatActivity implements View.OnFocusCh
             cursor.close();
 
             Bitmap mPic = ImageUtil.decodeSampledBitmapFromFilePath(old_picture_path,150,100);
-//            new_picture_path = ImageUtil.compressBmpToFile(mPic);
-//            Bitmap mNewPic = BitmapFactory.decodeFile(new_picture_path);
+            new_picture_path = ImageUtil.compressBmpToFile(mPic);
+
+            mPic = BitmapFactory.decodeFile(new_picture_path);
             mBookPicView.setImageBitmap(mPic);
             Log.d(TAG,old_picture_path);
 
@@ -183,11 +184,16 @@ public class AddBookActivity extends AppCompatActivity implements View.OnFocusCh
             cancel = true;
         }
         if(TextUtils.isEmpty(book_ISBN)){
-            mBookISBNView.setError(getString(R.string.error_field_required));
-            focusView = mBookISBNView;
+            mAddBookPicButton.setError(getString(R.string.error_field_required));
+            focusView = mAddBookPicButton;
             cancel = true;
         }
-        if (false) {
+        if( old_picture_path == null || old_picture_path.isEmpty()){
+            mBookPriceView.setError(getString(R.string.error_field_required));
+            focusView = mBookPriceView;
+            cancel = true;
+        }
+        if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
             focusView.requestFocus();
@@ -258,68 +264,19 @@ public class AddBookActivity extends AppCompatActivity implements View.OnFocusCh
 
     private void addBook() {
         //向服务器传数据
-        String test01 = "\\80\\96\\20170825_173204_357.jpg";
-        String test = "/sdcard/shuquan/book_pic/9b71e48a-6973-422d-a23e-901e99f69d5b.jpg";
-        HashMap<String, String> map = new HashMap<>();
-//        map.put("bookName", mBookNameView.getText().toString());
-//        map.put("author", mBookAuthorView.getText().toString());
-//        map.put("publisher", mBookPublisherView.getText().toString());
-//        map.put("publishDate", mBookPublishDateView.getText().toString());
-//        map.put("price", mBookPriceView.getText().toString());
-//        map.put("isbn", mBookISBNView.getText().toString());
-//        map.put("bookPic",new_picture_path);
-//        map.put("contentIntro", mBookContentIntroView.getText().toString());
-//        map.put("authorIntro", mBookAuthorIntroView.getText().toString());
-//        map.put("tags", mBookTag);
-//        map.put("zhuangZhen", mBookZhuangZhen);
+        BookInfo mBook = new BookInfo();
+        mBook.setBookName(mBookNameView.getText().toString());
+        mBook.setAuthor(mBookAuthorView.getText().toString());
+        mBook.setPublisher(mBookPublisherView.getText().toString());
+        mBook.setPublishDate(mBookPublishDateView.getText().toString());
+        mBook.setPrice(mBookPriceView.getText().toString());
+        mBook.setIsbn(mBookISBNView.getText().toString());
+        mBook.setContentIntro(mBookContentIntroView.getText().toString());
+        mBook.setAuthorIntro( mBookAuthorIntroView.getText().toString());
+        mBook.setTags(mBookTag);
+        mBook.setZhuangZhen(mBookZhuangZhen);
 
-//        map.put("bookName","数理统计");
-//        map.put("author", "施雨");
-//        map.put("publisher", "西安交通大学出版社");
-//        map.put("publishDate", "2005-01-01");
-//        map.put("price", "123元");
-//        map.put("isbn", "123456789");
-//        map.put("bookPic",test);
-//        map.put("contentIntro", "这是一本好书");
-//        map.put("authorIntro", "金龙练了，吴疆没练");
-//        map.put("tags", "文学");
-//        map.put("zhuangZhen", "平装");
-//
-//        map.put("translateAuthor","文强");
-//        map.put("pageNum","5页");
-//        map.put("congShu","金龙客车丛书");
-//        map.put("menu","自己编吧");
-//
-//        map.put("originName"," ");
-//        map.put("score"," ");
-//
-//        MyApplication.setUrl_api("book/add");
-
-//        HttpUtil.sendOkHttpPost(MyApplication.getUrl_api(), map, new okhttp3.Callback(){
-//
-//            @Override
-//            public void onFailure(Call call, IOException e) {
-//
-//            }
-//
-//            @Override
-//            public void onResponse(Call call, Response response) throws IOException {
-//                final String responseData = response.body().string();
-//                if(Utility.handleAddBookResponse(responseData)){
-//                    runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            Log.d(TAG,responseData);
-//
-//                        }
-//                    });
-//                }else{
-//                    Log.d(TAG,responseData);
-//                    Log.d(TAG,"添加未成功");
-//                }
-//            }
-//        });
-        Log.d(TAG,old_picture_path);
-        OkHttpUtil.sendMultipart(old_picture_path);
+        Log.d(TAG,new_picture_path);
+        OkHttpUtil.sendMultipart(new_picture_path, mBook);
     }
 }

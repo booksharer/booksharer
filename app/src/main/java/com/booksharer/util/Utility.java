@@ -64,6 +64,7 @@ public class Utility {
                 if (jsonObject.getInt("state") == 0){
                     JSONObject userData = new JSONObject(jsonObject.getString("data"));
                     User user = new User();
+                    user.setId(userData.getString("id"));
                     user.setUserName(userData.getString("userName"));
                     user.setEmail(userData.getString("email"));
                     user.setPhone(userData.getString("phone"));
@@ -100,7 +101,7 @@ public class Utility {
                     return true;
                 } else{
                     Log.d(TAG,jsonObject.getString("desc"));
-                    Log.d(TAG,jsonObject.getString("data"));
+//                    Log.d(TAG,jsonObject.getString("data"));
 //                    Toast.makeText(MyApplication.getContext(), jsonObject.getString("desc"), Toast.LENGTH_SHORT).show();
                 }
             } catch (JSONException e) {

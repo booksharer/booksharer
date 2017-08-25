@@ -2,6 +2,13 @@ package com.booksharer.util;
 
 import android.util.Log;
 
+import com.booksharer.entity.Book;
+import com.booksharer.entity.BookInfo;
+import com.booksharer.entity.UserBook;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -62,33 +69,25 @@ public class OkHttpUtil {
         }
     }
 
-    public static void sendMultipart(String path){
+    public static void sendMultipart(String path, final BookInfo mBook){
         final File file = new File(path);
         MyApplication.setUrl_api("book/add");
         OkHttpClient mOkHttpClient = new OkHttpClient();
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
-//                .addFormDataPart("bookName", "")
-//                .addFormDataPart("originName","")
-//                .addFormDataPart("author","")
-//                .addFormDataPart("translateAuthor","")
-//                .addFormDataPart("publisher","")
-//                .addFormDataPart("publishDate","")
-//                .addFormDataPart("price","")
-//                .addFormDataPart("isbn","")
-//                .addFormDataPart("pageNum","")
                 .addFormDataPart("title", "bookPic")
                 .addFormDataPart("image", "bookPic.jpg",
                         RequestBody.create(MEDIA_TYPE_PNG, file))
-                .addFormDataPart("bookName","test")
-//                .addFormDataPart("bookPic", "bookPic",
-//                        RequestBody.create(MEDIA_TYPE_PNG, file))
-//                .addFormDataPart("congShu","")
-//                .addFormDataPart("score","")
-//                .addFormDataPart("contentIntro","")
-//                .addFormDataPart("authorIntro","，吴疆没练")
-//                .addFormDataPart("menu","")
-//                .addFormDataPart("tags","")
+                .addFormDataPart("bookName",mBook.getBookName())
+                .addFormDataPart("author",mBook.getAuthor())
+                .addFormDataPart("publisher",mBook.getPublisher())
+                .addFormDataPart("publishDate",mBook.getPublishDate())
+                .addFormDataPart("price",mBook.getPrice())
+                .addFormDataPart("isbn",mBook.getIsbn())
+                .addFormDataPart("contentIntro",mBook.getContentIntro())
+                .addFormDataPart("authorIntro",mBook.getAuthorIntro())
+                .addFormDataPart("tags",mBook.getTags())
+                .addFormDataPart("zhuangZhen",mBook.getZhuangZhen())
                 .build();
 
         Request request = new Request.Builder()
@@ -100,12 +99,27 @@ public class OkHttpUtil {
         mOkHttpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-
+                Log.d(TAG, "失败");
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 Log.d(TAG, response.body().string());
+                try {
+                    JSONObject jsonObject = new JSONObject(response.toString());
+                    if (jsonObject.getInt("state") == 0) {
+                        JSONObject data = new JSONObject(jsonObject.getString("data"));
+                        mBook.setId(data.getString("id"));
+                        UserBook ub = new UserBook();
+                        ub.setUserId(MyApplication.getUser().getId());
+                        ub.setBookInfoId(mBook.getId());
+                        MyApplication.getUserBooks().add(ub);
+                    }else{
+                        Log.d(TAG,jsonObject.getString("desc"));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
