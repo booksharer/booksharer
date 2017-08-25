@@ -4,6 +4,29 @@
               android:layout_height="match_parent"
               android:gravity="center_horizontal"
               android:orientation="vertical">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:orientation="vertical"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/add_community_take_photo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="拍照"/>
+
+        <Button
+            android:id="@+id/add_community_choose_photo_from_album"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="从相册中选取"/>
+
+        <ImageView
+            android:id="@+id/picture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"/>
+    </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -21,7 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <EditText
+            <android.support.design.widget.TextInputEditText
                 android:id="@+id/community_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -33,25 +56,64 @@
         </android.support.design.widget.TextInputLayout>
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
+        <TextView
+            style="@style/Font20"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/community_owner_name"
+            />
 
-
-
-
-
-        <android.support.design.widget.TextInputLayout
+        <TextView
+            android:id="@+id/community_owner_name"
+            style="@style/Font20"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:hint="@string/community_owner_name"/>
 
-            <EditText
-                android:id="@+id/nickname"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/community_desc"
-                android:inputType="textMultiLine"
-                android:minLines="3"/>
+    </LinearLayout>
 
-        </android.support.design.widget.TextInputLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/Font20"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/community_position"
+            />
+
+        <TextView
+            android:id="@+id/community_position"
+            style="@style/Font20"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/community_position"/>
+
+    </LinearLayout>
+
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/community_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/community_desc"
+            android:inputType="textMultiLine"
+            android:minLines="3"/>
+
+    </android.support.design.widget.TextInputLayout>
 
     <LinearLayout
         style="@style/common_horizontal_division_line_style"
