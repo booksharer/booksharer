@@ -248,6 +248,7 @@
                    android:layout_height="match_parent"
                    android:weightSum="1">
                    <Button
+                       android:id="@+id/add_book_pic_btn"
                        style="?android:textAppearanceSmall"
                        android:layout_width="wrap_content"
                        android:layout_height="wrap_content"
@@ -261,10 +262,10 @@
 
                    <ImageView
                        android:id="@+id/book_picture"
-                       android:layout_width="100dp"
+                       android:layout_width="150dp"
                        android:layout_height="100dp"
-                       android:src="@drawable/banana"
-                       android:layout_weight="0.5"/>
+                       android:layout_weight="0.5"
+                       android:src="@drawable/banana" />
                </LinearLayout>
             </LinearLayout>
 

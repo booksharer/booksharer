@@ -92,6 +92,7 @@ public class Utility {
     public static boolean handleAddBookResponse(String response) {
         if (!TextUtils.isEmpty(response)) {
             try {
+                System.out.println(response);
                 JSONObject jsonObject = new JSONObject(response);
                 if (jsonObject.getInt("state") == 0) {
                     Log.d(TAG,jsonObject.getString("data"));
