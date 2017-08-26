@@ -180,13 +180,16 @@ public class Utility {
     public static boolean handleAddCommunityResponse(String response) {
         if (!TextUtils.isEmpty(response)) {
             try {
+                Log.d("test",response);
                 JSONObject jsonObject = new JSONObject(response);
                 if (jsonObject.getInt("state") == 0) {
                     //TODO
-                    jsonObject.getJSONArray("data");//data返回书圈的id信息
+                    Log.d("test",jsonObject.getString("data"));//data返回书圈的id信息
                     return true;
-                } else
-                    Toast.makeText(MyApplication.getContext(), jsonObject.getString("desc"), Toast.LENGTH_SHORT).show();
+                } else{
+                    Log.d("test",jsonObject.getString("desc"));
+                    return false;
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -201,8 +204,8 @@ public class Utility {
                 JSONObject jsonObject = new JSONObject(response);
                 if (jsonObject.getInt("state") == 0) {
                     Gson gson = new Gson();
-                    List<BookCommunity> bookCommunities = gson.fromJson(jsonObject.getJSONObject("data").toString(), new TypeToken<List<BookCommunity>>(){}.getType());
-                    BookCommunityLab.get(MyApplication.getContext()).appendBookCommunities(bookCommunities);
+                    List<BookCommunity> bookCommunities = gson.fromJson(jsonObject.getJSONArray("data").toString(), new TypeToken<List<BookCommunity>>(){}.getType());
+                    BookCommunityLab.get(MyApplication.getContext()).setBookCommunities(bookCommunities);
                     return true;
                 } else
                     Toast.makeText(MyApplication.getContext(), jsonObject.getString("desc"), Toast.LENGTH_SHORT).show();
