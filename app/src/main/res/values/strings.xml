@@ -7,6 +7,7 @@
     <string name="more">查看更多</string>
     <string name="bookName">书名</string>
     <string name="bookTag">类别</string>
+    <string name="bookNum">数量</string>
     <string name="book_tag_default">文学</string>
     <string name="authorName">作者</string>
     <string name="bookPublisher">出版社</string>
@@ -22,6 +23,7 @@
     <string name="book_name_hint">书名不能为空</string>
     <string name="book_price_hint">单价不能为空</string>
     <string name="book_author_hint">作者不能为空</string>
+    <string name="book_num_hint">数量不能为空</string>
     <string name="book_publisher_hint">出版社不能为空</string>
     <string name="book_isbn_hint">ISBN不能为空</string>
     <string name="book_contentIntro_hint">内容不得超过200字</string>

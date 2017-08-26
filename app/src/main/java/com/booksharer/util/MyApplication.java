@@ -3,8 +3,11 @@ package com.booksharer.util;
 import android.app.Application;
 import android.content.Context;
 import com.booksharer.entity.User;
+import com.booksharer.entity.UserBook;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Map;
 
 /**
@@ -17,6 +20,8 @@ public class MyApplication extends Application{
     private static User user;
     private static String position;
     private static String area = "定位失败";
+
+    private static LinkedList<UserBook> userBooks = new LinkedList<UserBook>();
 
 
     @Override
@@ -75,5 +80,13 @@ public class MyApplication extends Application{
 
     public static void setArea(String area) {
         MyApplication.area = area;
+    }
+
+    public static LinkedList<UserBook> getUserBooks() {
+        return userBooks;
+    }
+
+    public static void setUserBooks(LinkedList<UserBook> userBooks) {
+        MyApplication.userBooks = userBooks;
     }
 }

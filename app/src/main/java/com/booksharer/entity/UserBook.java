@@ -5,10 +5,10 @@ import java.io.Serializable;
 public class UserBook  implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private Integer userId;
-    private Integer bookInfoId;
+    private String userId;
+    private String bookInfoId;
     private Integer state;
-    private Integer count;
+    private String count;
     private String picture_1;
     private String picture_2;
     private String picture_3;
@@ -17,19 +17,19 @@ public class UserBook  implements Serializable {
     private String picture_6;
 
 
-    public Integer getUserId() {
+    public String getUserId() {
         return userId;
    }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
    }
 
-    public Integer getBookInfoId() {
+    public String getBookInfoId() {
         return bookInfoId;
    }
 
-    public void setBookInfoId(Integer bookInfoId) {
+    public void setBookInfoId(String bookInfoId) {
         this.bookInfoId = bookInfoId;
    }
 
@@ -41,11 +41,11 @@ public class UserBook  implements Serializable {
         this.state = state;
    }
 
-    public Integer getCount() {
+    public String getCount() {
         return count;
    }
 
-    public void setCount(Integer count) {
+    public void setCount(String count) {
         this.count = count;
    }
 
