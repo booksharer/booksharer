@@ -1,6 +1,7 @@
 package com.booksharer.util;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import com.booksharer.entity.Book;
 import com.booksharer.entity.BookInfo;
@@ -69,7 +70,7 @@ public class OkHttpUtil {
         }
     }
 
-    public static void sendMultipart(String path, final BookInfo mBook){
+    public static void sendMultipartBook(String path, final BookInfo mBook, final String mBookNum){
         final File file = new File(path);
         MyApplication.setUrl_api("book/add");
         OkHttpClient mOkHttpClient = new OkHttpClient();
@@ -104,9 +105,10 @@ public class OkHttpUtil {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                Log.d(TAG, response.body().string());
+//                Log.d(TAG, response.body().string());
                 try {
-                    JSONObject jsonObject = new JSONObject(response.toString());
+//                    Log.d(TAG,response.toString());
+                    JSONObject jsonObject = new JSONObject(response.body().string());
                     if (jsonObject.getInt("state") == 0) {
                         JSONObject data = new JSONObject(jsonObject.getString("data"));
                         mBook.setId(data.getString("id"));
@@ -114,6 +116,12 @@ public class OkHttpUtil {
                         ub.setUserId(MyApplication.getUser().getId());
                         ub.setBookInfoId(mBook.getId());
                         MyApplication.getUserBooks().add(ub);
+                        Log.d(TAG,ub.toString());
+                        Log.d(TAG,MyApplication.getUserBooks().toString());
+                        if(ub != null){
+                            ub.setCount(mBookNum);
+                            OkHttpUtil.sendMultipartUserBook(ub);
+                        }
                     }else{
                         Log.d(TAG,jsonObject.getString("desc"));
                     }
@@ -124,4 +132,32 @@ public class OkHttpUtil {
         });
     }
 
+
+    public static void sendMultipartUserBook(UserBook ub) {
+        MyApplication.setUrl_api("userBook/add");
+        OkHttpClient mOkHttpClient = new OkHttpClient();
+        RequestBody requestbody = new FormBody.Builder()
+                .add("userId", ub.getUserId())
+                .add("bookInfoId", ub.getBookInfoId())
+                .add("count", String.valueOf(ub.getCount()))
+                .build();
+        Request request = new Request.Builder()
+                .url(MyApplication.getUrl_api())
+                .post(requestbody)
+                .build();
+        Call call = mOkHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                Log.d(TAG, response.body().string());
+            }
+
+        });
+
+    }
 }

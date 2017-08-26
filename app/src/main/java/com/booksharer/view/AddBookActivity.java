@@ -27,6 +27,7 @@ import android.widget.TextView;
 
 import com.booksharer.R;
 import com.booksharer.entity.BookInfo;
+import com.booksharer.entity.UserBook;
 import com.booksharer.util.HttpUtil;
 import com.booksharer.util.ImageUtil;
 import com.booksharer.util.MyApplication;
@@ -37,19 +38,20 @@ import com.booksharer.util.Utility;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 import okhttp3.Call;
 import okhttp3.Response;
 
 public class AddBookActivity extends AppCompatActivity implements View.OnFocusChangeListener {
 
-    private EditText mBookNameView, mBookAuthorView, mBookPublisherView,
+    private EditText mBookNameView, mBookAuthorView, mBookNumView, mBookPublisherView,
             mBookPublishDateView, mBookPriceView, mBookISBNView,
             mBookContentIntroView, mBookAuthorIntroView;
 
     private ImageView mBookPicView;
 
-    private String mBookTag, mBookZhuangZhen,mFileName;
+    private String mBookTag, mBookZhuangZhen,mFileName, mBookNum;
     private Spinner sTag,sZhuangZhen;
 
     private Button mAddBookButton,mAddBookPicButton;
@@ -59,6 +61,8 @@ public class AddBookActivity extends AppCompatActivity implements View.OnFocusCh
     private static int RESULT_LOAD_IMAGE = 1;
     private static String old_picture_path, new_picture_path;
 
+    private LinkedList<UserBook> mUserBooks = new LinkedList<UserBook>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,8 +71,11 @@ public class AddBookActivity extends AppCompatActivity implements View.OnFocusCh
     }
 
     private void initView() {
+        mUserBooks = MyApplication.getUserBooks();
+
         mBookNameView = (EditText) findViewById(R.id.book_name);
         mBookAuthorView = (EditText) findViewById(R.id.author_name);
+        mBookNumView = (EditText) findViewById(R.id.book_num);
         mBookPublisherView = (EditText) findViewById(R.id.book_publisher);
         mBookPublishDateView = (EditText) findViewById(R.id.book_publish_date);
         mBookPriceView = (EditText) findViewById(R.id.book_price);
@@ -154,17 +161,30 @@ public class AddBookActivity extends AppCompatActivity implements View.OnFocusCh
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initView();
+    }
+
     private void attempAddBook() {
         mBookNameView.setError(null);
         mBookAuthorView.setError(null);
         mBookPublisherView.setError(null);
         mBookISBNView.setError(null);
+        mBookNumView.setError(null);
+        mAddBookPicButton.setError(null);
+        mBookPriceView.setError(null);
 
 
         String book_name = mBookNameView.getText().toString();
         String book_author = mBookAuthorView.getText().toString();
         String book_publisher = mBookPublisherView.getText().toString();
         String book_ISBN = mBookISBNView.getText().toString();
+        String book_price = mBookPriceView.getText().toString();
+
+        String book_num = mBookNumView.getText().toString();
+
         boolean cancel = false;
         View focusView = null;
 
@@ -183,14 +203,24 @@ public class AddBookActivity extends AppCompatActivity implements View.OnFocusCh
             focusView = mBookPublisherView;
             cancel = true;
         }
+        if(TextUtils.isEmpty(book_price)){
+            mBookPriceView.setError(getString(R.string.error_field_required));
+            focusView = mBookPriceView;
+            cancel = true;
+        }
         if(TextUtils.isEmpty(book_ISBN)){
-            mAddBookPicButton.setError(getString(R.string.error_field_required));
+            mBookISBNView.setError(getString(R.string.error_field_required));
+            focusView = mBookISBNView;
+            cancel = true;
+        }
+        if(TextUtils.isEmpty(book_num)){
+            mBookNumView.setError(getString(R.string.error_field_required));
             focusView = mAddBookPicButton;
             cancel = true;
         }
         if( old_picture_path == null || old_picture_path.isEmpty()){
-            mBookPriceView.setError(getString(R.string.error_field_required));
-            focusView = mBookPriceView;
+            mAddBookPicButton.setError(getString(R.string.error_field_required));
+            focusView = mAddBookPicButton;
             cancel = true;
         }
         if (cancel) {
@@ -276,7 +306,9 @@ public class AddBookActivity extends AppCompatActivity implements View.OnFocusCh
         mBook.setTags(mBookTag);
         mBook.setZhuangZhen(mBookZhuangZhen);
 
+        mBookNum = mBookNumView.getText().toString();
+
         Log.d(TAG,new_picture_path);
-        OkHttpUtil.sendMultipart(new_picture_path, mBook);
+        OkHttpUtil.sendMultipartBook(new_picture_path, mBook, mBookNum);
     }
 }

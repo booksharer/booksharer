@@ -8,7 +8,7 @@ public class UserBook  implements Serializable {
     private String userId;
     private String bookInfoId;
     private Integer state;
-    private Integer count;
+    private String count;
     private String picture_1;
     private String picture_2;
     private String picture_3;
@@ -41,11 +41,11 @@ public class UserBook  implements Serializable {
         this.state = state;
    }
 
-    public Integer getCount() {
+    public String getCount() {
         return count;
    }
 
-    public void setCount(Integer count) {
+    public void setCount(String count) {
         this.count = count;
    }
 

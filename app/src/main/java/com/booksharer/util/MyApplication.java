@@ -7,6 +7,7 @@ import com.booksharer.entity.UserBook;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Map;
 
 /**
@@ -20,7 +21,7 @@ public class MyApplication extends Application{
     private static String position;
     private static String area = "定位失败";
 
-    private static ArrayList<UserBook> userBooks = new ArrayList<UserBook>();
+    private static LinkedList<UserBook> userBooks = new LinkedList<UserBook>();
 
 
     @Override
@@ -81,11 +82,11 @@ public class MyApplication extends Application{
         MyApplication.area = area;
     }
 
-    public static ArrayList<UserBook> getUserBooks() {
+    public static LinkedList<UserBook> getUserBooks() {
         return userBooks;
     }
 
-    public static void setUserBooks(ArrayList<UserBook> userBooks) {
+    public static void setUserBooks(LinkedList<UserBook> userBooks) {
         MyApplication.userBooks = userBooks;
     }
 }
