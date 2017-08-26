@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentTabHost;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -55,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
             String [] permissions = permissionList.toArray(new String[permissionList.size()]);
             ActivityCompat.requestPermissions(this, permissions, 1);
         } else {
+            Log.d("test","启动定位服务");
             //启动定位服务
             Intent startIntent = new Intent(this, LocationService.class);
             startService(startIntent); // 启动服务

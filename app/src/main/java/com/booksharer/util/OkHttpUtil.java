@@ -16,21 +16,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.FormBody;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
  * Created by DELL on 2017/8/24.
  */
 public class OkHttpUtil {
-    private static final MediaType MEDIA_TYPE_PNG = MediaType.parse("image/png");
-    private static final String TAG = "OkHttpUtil";
 
     public static void downloadImage(final String logo){
         String logo_url = "/sdcard/shuquan/"+logo;
