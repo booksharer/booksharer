@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="tags">
+        <item>文学</item>
+        <item>小说 </item>
+        <item>教育</item>
+        <item>经济</item>
+        <item>历史</item>
+        <item>哲学</item>
+        <item>医学 </item>
+        <item>科技</item>
+        <item>诗词</item>
+        <item>社会学</item>
+        <item>政治</item>
+        <item>法律 </item>
+        <item>其他</item>
+    </string-array>
+
+    <string-array name="zhuangzhen">
+        <item>平装</item>
+        <item>精装 </item>
+        <item>简装</item>
+    </string-array>
+</resources>
