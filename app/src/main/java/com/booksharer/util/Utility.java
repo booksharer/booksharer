@@ -117,10 +117,12 @@ public class Utility {
                 JSONObject jsonObject = new JSONObject(response);
                 if (jsonObject.getInt("state") == 0) {
                     //TODO
+                    Log.d(TAG, String.valueOf(jsonObject.getJSONArray("data")));
                     jsonObject.getJSONArray("data");//data返回查找书本数组
                     return true;
                 } else
-                    Toast.makeText(MyApplication.getContext(), jsonObject.getString("desc"), Toast.LENGTH_SHORT).show();
+                    Log.d(TAG,jsonObject.getString("desc"));
+//                    Toast.makeText(MyApplication.getContext(), jsonObject.getString("desc"), Toast.LENGTH_SHORT).show();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
