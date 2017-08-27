@@ -2,10 +2,10 @@ package com.booksharer.util;
 
 import android.app.Application;
 import android.content.Context;
+
 import com.booksharer.entity.User;
 import com.booksharer.entity.UserBook;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
@@ -48,7 +48,7 @@ public class MyApplication extends Application{
 
         Iterator i = params.entrySet().iterator();
         while (i.hasNext()) {
-            Map.Entry entry = (java.util.Map.Entry) i.next();
+            Map.Entry entry = (Map.Entry) i.next();
             stringBuilder
                     .append(entry.getKey().toString())
                     .append("=")

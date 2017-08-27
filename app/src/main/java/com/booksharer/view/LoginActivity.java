@@ -3,13 +3,11 @@ package com.booksharer.view;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.content.DialogInterface;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Looper;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
@@ -56,11 +54,19 @@ public class LoginActivity extends AppCompatActivity {
     private View mLoginFormView;
     private static String phoneNum;
     private static final String TAG="LoginActivity";
+    private SharedPreferences mSharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        mSharedPreferences = getSharedPreferences("loginRemember", Activity.MODE_PRIVATE);
+
+        mUserNameView = (AutoCompleteTextView) findViewById(R.id.user_name);
+        mPasswordView = (EditText) findViewById(R.id.password);
+
+        checkPreferences();
         initView();
         populateAutoComplete();
         final CheckBox cbDisplayPassword = (CheckBox) super.findViewById(R.id.DisplayPassword);
@@ -76,6 +82,17 @@ public class LoginActivity extends AppCompatActivity {
         } );
     }
 
+    private void checkPreferences() {
+        SharedPreferences mSP= getSharedPreferences("loginRemember",Activity.MODE_PRIVATE);
+        if(mSP != null){
+            String uniqueAccount = mSP.getString("uniqueAccount", "");
+            String password = mSP.getString("password", "");
+            mUserNameView.setText(uniqueAccount);
+            mPasswordView.setText(password);
+        }
+//        Log.d(TAG,mSP.toString());
+    }
+
     private void populateAutoComplete() {
         // 获取搜索记录文件内容
         SharedPreferences sp = getSharedPreferences("search_history", 0);
@@ -88,9 +105,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        mUserNameView = (AutoCompleteTextView) findViewById(R.id.user_name);
-        mPasswordView = (EditText) findViewById(R.id.password);
-
         Button mSignInButton = (Button) findViewById(R.id.sign_in_button);
         mSignInButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -199,9 +213,11 @@ public class LoginActivity extends AppCompatActivity {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
+            final String username = mUserNameView.getText().toString();
+            final String pwd = mPasswordView.getText().toString();
             HashMap<String, String> map = new HashMap<>();
-            map.put("uniqueAccount", mUserNameView.getText().toString());
-            map.put("password", mPasswordView.getText().toString());
+            map.put("uniqueAccount", username);
+            map.put("password", pwd);
 
             MyApplication.setUrl_api("/user/login");
             HttpUtil.sendOkHttpPost(MyApplication.getUrl_api(), map, new okhttp3.Callback() {
@@ -217,6 +233,11 @@ public class LoginActivity extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+                                SharedPreferences.Editor editor = mSharedPreferences.edit();
+                                editor.putString("uniqueAccount",username);
+                                editor.putString("password",pwd);
+                                editor.commit();
+                                Log.d(TAG,editor.toString());
                                 Toast.makeText(MyApplication.getContext(), R.string.action_sign_in_success, Toast.LENGTH_SHORT).show();
                                 finish();
                             }

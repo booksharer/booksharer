@@ -16,7 +16,6 @@ import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
-import okhttp3.Response;
 
 public class HttpUtil {
     private static final MediaType MEDIA_TYPE_PNG = MediaType.parse("image/png");
@@ -74,7 +73,7 @@ public class HttpUtil {
         Iterator i = params.entrySet().iterator();
 
         while (i.hasNext()) {
-            Map.Entry entry = (java.util.Map.Entry) i.next();
+            Map.Entry entry = (Map.Entry) i.next();
             builder.add(entry.getKey().toString(), entry.getValue().toString());
         }
         RequestBody requestBody = builder.build();

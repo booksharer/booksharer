@@ -1,11 +1,8 @@
 package com.booksharer.util;
 
-import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.Environment;
 import android.util.Log;
 
 import java.io.BufferedOutputStream;

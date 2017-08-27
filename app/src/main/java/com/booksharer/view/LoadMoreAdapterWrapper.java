@@ -11,14 +11,6 @@ import android.view.ViewGroup;
 
 import com.booksharer.R;
 import com.booksharer.entity.BookCommunity;
-import com.booksharer.util.HttpUtil;
-import com.booksharer.util.MyApplication;
-import com.booksharer.util.Utility;
-
-import java.io.IOException;
-
-import okhttp3.Call;
-import okhttp3.Response;
 
 /**
  * 在这个装饰器中，只做与加载更多相关操作。

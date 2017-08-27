@@ -53,7 +53,7 @@ public class ConnectTask extends AsyncTask<HashMap<String, String>, String, Bool
         StringBuilder content = new StringBuilder();
         Iterator i = params.entrySet().iterator();
         while (i.hasNext()) {
-            Map.Entry entry = (java.util.Map.Entry) i.next();
+            Map.Entry entry = (Map.Entry) i.next();
             content.append("&" + entry.getKey() + "=" + entry.getValue());
         }
         Log.d("test", content.substring(1));

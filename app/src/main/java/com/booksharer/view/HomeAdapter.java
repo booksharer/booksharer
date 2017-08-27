@@ -3,7 +3,6 @@ package com.booksharer.view;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,17 +14,15 @@ import android.widget.Toast;
 import com.booksharer.R;
 import com.booksharer.entity.BookCommunity;
 import com.booksharer.entity.BookCommunityLab;
-import com.booksharer.util.HttpUtil;
 import com.booksharer.util.MyApplication;
 import com.booksharer.util.OkHttpUtil;
 
-import java.util.List;
 import java.util.Locale;
 
 /**
  * Created by DELL on 2017/5/21.
  */
-public class HomeAdapter extends BaseAdapter<BookCommunity>{
+public class HomeAdapter extends BaseAdapter<BookCommunity> {
 
     private Context mContext;
 

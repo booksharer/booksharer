@@ -3,45 +3,37 @@ package com.booksharer.view;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
-import android.preference.PreferenceManager;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.booksharer.R;
 import com.booksharer.entity.BookInfo;
 import com.booksharer.entity.UserBook;
-import com.booksharer.util.HttpUtil;
 import com.booksharer.util.ImageUtil;
 import com.booksharer.util.MyApplication;
 import com.booksharer.util.OkHttpUtil;
 import com.booksharer.util.RegexUtils;
-import com.booksharer.util.Utility;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
-
-import okhttp3.Call;
-import okhttp3.Response;
+import java.util.Set;
 
 public class AddBookActivity extends AppCompatActivity implements View.OnFocusChangeListener {
 
@@ -63,6 +55,8 @@ public class AddBookActivity extends AppCompatActivity implements View.OnFocusCh
 
     private LinkedList<UserBook> mUserBooks = new LinkedList<UserBook>();
 
+    public static SharedPreferences mSharedPreferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +65,8 @@ public class AddBookActivity extends AppCompatActivity implements View.OnFocusCh
     }
 
     private void initView() {
+
+        mSharedPreferences = getSharedPreferences("userBookRemember", Activity.MODE_PRIVATE);
         mUserBooks = MyApplication.getUserBooks();
 
         mBookNameView = (EditText) findViewById(R.id.book_name);
@@ -119,7 +115,7 @@ public class AddBookActivity extends AppCompatActivity implements View.OnFocusCh
         mAddBookPicButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(i, RESULT_LOAD_IMAGE);
             }
         });
@@ -165,6 +161,7 @@ public class AddBookActivity extends AppCompatActivity implements View.OnFocusCh
     protected void onResume() {
         super.onResume();
         initView();
+        setPreferences();
     }
 
     private void attempAddBook() {
@@ -310,5 +307,39 @@ public class AddBookActivity extends AppCompatActivity implements View.OnFocusCh
 
         Log.d(TAG,new_picture_path);
         OkHttpUtil.sendMultipartBook(new_picture_path, mBook, mBookNum);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        setPreferences();
+//        MyApplication.setUserBooks(MyApplication.getUserBooks());
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        setPreferences();
+    }
+
+
+    private void setPreferences() {
+        SharedPreferences.Editor editor = AddBookActivity.mSharedPreferences.edit();
+        LinkedList<UserBook> ubs = MyApplication.getUserBooks();
+        if(ubs.size() > 0){
+            UserBook ub =  MyApplication.getUserBooks().getLast();
+            editor.putString("lastBookInfoId",ub.getBookInfoId());
+            editor.putString("userId",ub.getUserId());
+            editor.putString("count",ub.getCount());
+
+            int length = ubs.size();
+            Set<String> bookInfoIds = new HashSet<String>();
+            for(int i = 0; i < length; i++){
+                bookInfoIds.add(ubs.get(i).getBookInfoId());
+            }
+            editor.putStringSet("bookInfoIds",bookInfoIds);
+            editor.commit();
+        }
+
     }
 }

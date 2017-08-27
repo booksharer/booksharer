@@ -1,9 +1,7 @@
 package com.booksharer.util;
 
 import android.util.Log;
-import android.widget.Toast;
 
-import com.booksharer.entity.Book;
 import com.booksharer.entity.BookInfo;
 import com.booksharer.entity.UserBook;
 
@@ -15,8 +13,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+
 import okhttp3.Call;
-import okhttp3.Response;
 import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.MediaType;
@@ -26,13 +24,12 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-import static android.content.ContentValues.TAG;
-
 /**
  * Created by DELL on 2017/8/24.
  */
 public class OkHttpUtil {
     private static final MediaType MEDIA_TYPE_PNG = MediaType.parse("image/png");
+    private static final String TAG = "OkHttpUtil";
 
     public static void downloadImage(final String logo){
         String logo_url = "/sdcard/shuquan/"+logo;
@@ -42,7 +39,7 @@ public class OkHttpUtil {
             HashMap<String, String> map = new HashMap<>();
             map.put("fileName",logo);
             MyApplication.setUrl_api("community/download",map);
-            HttpUtil.sendOkHttpRequest(MyApplication.getUrl_api(),new okhttp3.Callback(){
+            HttpUtil.sendOkHttpRequest(MyApplication.getUrl_api(),new Callback(){
 
                 @Override
                 public void onFailure(Call call, IOException e) {
@@ -117,11 +114,10 @@ public class OkHttpUtil {
                         UserBook ub = new UserBook();
                         ub.setUserId(MyApplication.getUser().getId());
                         ub.setBookInfoId(mBook.getId());
-                        MyApplication.getUserBooks().add(ub);
+                        ub.setCount(mBookNum);
                         Log.d(TAG,ub.toString());
-                        Log.d(TAG,MyApplication.getUserBooks().toString());
+                        Log.d(TAG, MyApplication.getUserBooks().toString());
                         if(ub != null){
-                            ub.setCount(mBookNum);
                             OkHttpUtil.sendMultipartUserBook(ub);
                         }
                     }else{
@@ -156,7 +152,22 @@ public class OkHttpUtil {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                Log.d(TAG, response.body().string());
+//                Log.d(TAG, response.body().string());
+                JSONObject jsonObject = null;
+                try {
+                    jsonObject = new JSONObject(response.body().string());
+                    if (jsonObject.getInt("state") == 0) {
+                        JSONObject data = new JSONObject(jsonObject.getString("data"));
+                        UserBook ub = new UserBook();
+                        ub.setBookInfoId(data.getString("bookInfoId"));
+                        ub.setUserId(data.getString("userId"));
+                        ub.setCount(data.getString("count"));
+                        MyApplication.getUserBooks().add(ub);
+                        Log.d(TAG , MyApplication.getUserBooks().toString());
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
 
         });

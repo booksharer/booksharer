@@ -15,8 +15,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import okhttp3.Call;
-import okhttp3.Response;
 
 import com.booksharer.R;
 import com.booksharer.entity.User;
@@ -27,8 +25,10 @@ import com.booksharer.util.Utility;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.HashMap;
+
+import okhttp3.Call;
+import okhttp3.Response;
 
 /**
  * Created by DELL on 2017/5/22.
