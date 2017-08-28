@@ -76,7 +76,7 @@ public class FindBookAcitivity extends AppCompatActivity {
     private void findByName() {
         HashMap<String, String> map = new HashMap<>();
         map.put("bookName", mFindBookByName.getText().toString());
-        map.put("pageSize", "5");
+        map.put("pageSize", "15");
         MyApplication.setUrl_api("/book/find");
         HttpUtil.sendOkHttpPost(MyApplication.getUrl_api(), map, new okhttp3.Callback() {
             @Override
@@ -98,7 +98,6 @@ public class FindBookAcitivity extends AppCompatActivity {
                     });
                 } else {
                     Log.d(TAG,"查找未成功");
-//                    Toast.makeText(MyApplication.getContext(), "注册成功", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -124,8 +123,8 @@ public class FindBookAcitivity extends AppCompatActivity {
     private void findByIsbn() {
 
         HashMap<String, String> map = new HashMap<>();
-        map.put("isbn", mFindBookByName.getText().toString());
-        map.put("pageSize", "5");
+        map.put("isbn", mFindBookByIsbn.getText().toString());
+        map.put("pageSize", "15");
         MyApplication.setUrl_api("/book/find");
         HttpUtil.sendOkHttpPost(MyApplication.getUrl_api(), map, new okhttp3.Callback() {
             @Override
@@ -140,14 +139,14 @@ public class FindBookAcitivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            mFindBookByName.getText().clear();
+                            mFindBookByIsbn.getText().clear();
                             Intent intent = new Intent(FindBookAcitivity.this, FindBookResultAcitivity.class);
                             startActivity(intent);
+                            finish();
                         }
                     });
                 } else {
                     Log.d(TAG,"查找未成功");
-//                    Toast.makeText(MyApplication.getContext(), "注册成功", Toast.LENGTH_SHORT).show();
                 }
             }
         });
