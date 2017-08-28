@@ -70,6 +70,18 @@ public class BookCommunity  implements Serializable {
         this.communityPeopleNum = communityPeopleNum;
    }
 
+    @Override
+    public String toString() {
+        return "BookCommunity{" +
+                "id=" + id +
+                ", communityName='" + communityName + '\'' +
+                ", communityDesc='" + communityDesc + '\'' +
+                ", communityPosition='" + communityPosition + '\'' +
+                ", communityCreatorId=" + communityCreatorId +
+                ", communityLogo='" + communityLogo + '\'' +
+                ", communityPeopleNum=" + communityPeopleNum +
+                '}';
+    }
 }
 
 /*List columns as follows:

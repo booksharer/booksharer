@@ -90,7 +90,7 @@ public class AddCommunityActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v){
                         //创建File对象，用于存储拍照后的照片
-                        outputImage = new File(Environment.getExternalStorageDirectory(),"output_image.jpg");
+                        outputImage = new File(Environment.getExternalStorageDirectory(),"/sdcard/shuquan/output_image.jpg");
                         try{
                             if (outputImage.exists()){
                                 outputImage.delete();

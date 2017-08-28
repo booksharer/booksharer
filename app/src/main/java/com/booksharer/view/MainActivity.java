@@ -55,13 +55,11 @@ public class MainActivity extends AppCompatActivity {
         if (!permissionList.isEmpty()) {
             String [] permissions = permissionList.toArray(new String[permissionList.size()]);
             ActivityCompat.requestPermissions(this, permissions, 1);
-        } else {
-            Log.d("test","启动定位服务");
-            //启动定位服务
-            Intent startIntent = new Intent(this, LocationService.class);
-            startService(startIntent); // 启动服务
         }
-
+        Log.d("test","启动定位服务");
+        //启动定位服务
+        Intent startIntent = new Intent(this, LocationService.class);
+        startService(startIntent); // 启动服务
         initView();
     }
 
