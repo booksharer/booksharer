@@ -78,7 +78,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                     }
                 }
             case CHOOSE_PHORO:
-                if (requestCode == RESULT_OK){
+                if (resultCode == RESULT_OK){
                     if (Build.VERSION.SDK_INT >=19){
                         //4.4以上系统使用这个方法处理照片
                         handleImageOnKitKat(data);

@@ -64,7 +64,7 @@ public class Utility {
                 if (jsonObject.getInt("state") == 0){
                     JSONObject userData = new JSONObject(jsonObject.getString("data"));
                     User user = new User();
-                    user.setId(userData.getString("id"));
+                    user.setId(Integer.parseInt(userData.getString("id")));
                     user.setUserName(userData.getString("userName"));
                     user.setEmail(userData.getString("email"));
                     user.setPhone(userData.getString("phone"));

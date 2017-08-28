@@ -2,6 +2,7 @@ package com.booksharer.util;
 
 import android.util.Log;
 
+import com.booksharer.entity.BookCommunity;
 import com.booksharer.entity.BookInfo;
 import com.booksharer.entity.UserBook;
 
@@ -12,7 +13,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -111,7 +114,7 @@ public class OkHttpUtil {
                         JSONObject data = new JSONObject(jsonObject.getString("data"));
                         mBook.setId(data.getString("id"));
                         UserBook ub = new UserBook();
-                        ub.setUserId(MyApplication.getUser().getId());
+                        ub.setUserId(MyApplication.getUser().getId().toString());
                         ub.setBookInfoId(mBook.getId());
                         ub.setCount(mBookNum);
                         Log.d(TAG,ub.toString());
@@ -171,5 +174,48 @@ public class OkHttpUtil {
 
         });
 
+    }
+
+    public static void sendMultipartBookCommunity(final BookCommunity bookCommunity) {
+        MyApplication.setUrl_api("community/add");
+        OkHttpClient mOkHttpClient = new OkHttpClient();
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("communityName", bookCommunity.getCommunityName())
+                .addFormDataPart("image", bookCommunity.getCommunityLogo(),
+                        RequestBody.create(MEDIA_TYPE_PNG,  new File(bookCommunity.getCommunityLogo())))
+                .addFormDataPart("communityDesc",bookCommunity.getCommunityDesc())
+                .addFormDataPart("communityPosition",bookCommunity.getCommunityPosition())
+                .addFormDataPart("communityCreatorId",bookCommunity.getCommunityCreatorId().toString())
+                .build();
+        Request request = new Request.Builder()
+                .header("Authorization", "Client-ID " + "...")
+                .url(MyApplication.getUrl_api())
+                .post(requestBody)
+                .build();
+        mOkHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("test", "书圈图片上传失败");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+//                Log.d(TAG, response.body().string());
+                try {
+                    Log.d("test",response.toString());
+                    JSONObject jsonObject = new JSONObject(response.body().string());
+                    if (jsonObject.getInt("state") == 0) {
+                        JSONObject data = new JSONObject(jsonObject.getString("data"));
+                        bookCommunity.setId(Integer.parseInt(data.getString("id")) );
+                        bookCommunity.setCommunityPeopleNum(data.getInt("communityPeopleNum"));
+                    }else{
+                        Log.d("test",jsonObject.getString("desc"));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }
