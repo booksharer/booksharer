@@ -17,7 +17,7 @@ public class BookCommunityLab {
     public String toString() {
         String str = "";
         for (int j = 0; j < mBookCommunities.size(); j++) {
-            str += "/" + mBookCommunities.get(j);
+            str += "/" + mBookCommunities.get(j).toString();
 
         }
 

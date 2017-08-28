@@ -4,6 +4,7 @@ package com.booksharer.service;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
@@ -20,7 +21,6 @@ import java.util.List;
 public class LocationService extends Service {
     LocationClient mLocationClient;
     BDLocationListener myListener;
-
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -136,6 +136,8 @@ public class LocationService extends Service {
                     sb.append(p.getId() + " " + p.getName() + " " + p.getRank() + " " + p.describeContents());
                 }
             }
+
+            Log.d("test", location.getLocType()+"");
             Log.d("test", sb.toString());
             MyApplication.setPosition(location.getLatitude() + "," + location.getLongitude());
             MyApplication.setArea(location.getCity()+location.getStreet());
@@ -143,4 +145,5 @@ public class LocationService extends Service {
             LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
         }
     }
+
 }

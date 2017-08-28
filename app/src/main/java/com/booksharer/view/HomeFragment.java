@@ -129,6 +129,7 @@ public class HomeFragment extends Fragment {
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
+                            loadCount = 3;
 //                            Log.d("test", "触发");
 //                            List<BookCommunity> mBookCommunities = new ArrayList<>();
 //                            for (int i = 0; i < 3; i++) {
@@ -154,8 +155,8 @@ public class HomeFragment extends Fragment {
             });
 
         } else {
-            Log.d("test", "notify");
-            mAdapter.notifyDataSetChanged();
+            Log.d("test", "此时数据为\n"+bookCommunityLab.toString());
+            mAdapter.updateData(bookCommunityLab.getBookCommunities());
         }
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
@@ -173,7 +174,7 @@ public class HomeFragment extends Fragment {
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
 
         //根据屏幕信息设置ViewPager广告容器的宽高      原高度dm.heightPixels * 2 / 5
-        adViewPager.setLayoutParams(new LayoutParams(dm.widthPixels, dm.widthPixels * 9 / 16));
+        adViewPager.setLayoutParams(new LayoutParams(dm.widthPixels/2, dm.widthPixels * 2 / 3));
 
         //将ViewPager容器设置到布局文件父容器中
         pagerLayout.addView(adViewPager);
@@ -226,15 +227,15 @@ public class HomeFragment extends Fragment {
         pageViews = new ArrayList<>();
 
         ImageView img1 = new ImageView(getActivity());
-        img1.setBackgroundResource(R.drawable.ad01);
+        img1.setBackgroundResource(R.drawable.aa);
         pageViews.add(img1);
 
         ImageView img2 = new ImageView(getActivity());
-        img2.setBackgroundResource(R.drawable.ad03);
+        img2.setBackgroundResource(R.drawable.bb);
         pageViews.add(img2);
 
         ImageView img3 = new ImageView(getContext());
-        img3.setBackgroundResource(R.drawable.ad02);
+        img3.setBackgroundResource(R.drawable.cc);
         pageViews.add(img3);
 
         adapter = new AdPageAdapter(pageViews);
@@ -354,6 +355,7 @@ public class HomeFragment extends Fragment {
     private class LocalReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.d("test", "收到定位广播");
             TextView city = (TextView) view.findViewById(R.id.city);
             city.setText(MyApplication.getArea());
             HashMap<String, String> map = new HashMap<>();
@@ -377,7 +379,6 @@ public class HomeFragment extends Fragment {
                              bookCommunities) {
                             final String logo = bookCommunity.getCommunityLogo();
                             OkHttpUtil.downloadImage(logo);
-
                         }
                         //显示
                         getActivity().runOnUiThread(new Runnable() {

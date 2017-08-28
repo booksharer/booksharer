@@ -1,6 +1,7 @@
 package com.booksharer.view;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter {
 
     public void updateData(List dataSet) {
         this.dataSet = dataSet;
+        Log.d("test", "notify");
         notifyDataSetChanged();
     }
 

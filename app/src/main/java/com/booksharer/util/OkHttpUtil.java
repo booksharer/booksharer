@@ -40,7 +40,6 @@ public class OkHttpUtil {
             map.put("fileName",logo);
             MyApplication.setUrl_api("community/download",map);
             HttpUtil.sendOkHttpRequest(MyApplication.getUrl_api(),new Callback(){
-
                 @Override
                 public void onFailure(Call call, IOException e) {
 
