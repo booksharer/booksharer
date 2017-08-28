@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -50,6 +51,8 @@ public class HomeFragment extends Fragment {
     private ImageView[] imageViews;
     private AdPageAdapter adapter;
     private AtomicInteger atomicInteger = new AtomicInteger(0);
+
+    private Button mFindBookBtn;
 
     private RecyclerView mRecyclerView;
     private BaseAdapter mAdapter;
@@ -83,6 +86,15 @@ public class HomeFragment extends Fragment {
         mIntentFilter.addAction("com.booksharer.LOCAL_BROADCAST");
         mLocalReceiver = new LocalReceiver();
         mLocalBroadcastManager.registerReceiver(mLocalReceiver, mIntentFilter);
+
+        mFindBookBtn = (Button) view.findViewById(R.id.find_book_btn);
+        mFindBookBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(),FindBookAcitivity.class);
+                startActivity(intent);
+            }
+        });
 
         view.findViewById(R.id.locate).setOnClickListener(new View.OnClickListener() {
             @Override
