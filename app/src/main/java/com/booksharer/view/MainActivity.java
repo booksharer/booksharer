@@ -3,6 +3,7 @@ package com.booksharer.view;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTabHost;
 import android.support.v4.content.ContextCompat;
@@ -14,9 +15,11 @@ import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.booksharer.R;
 import com.booksharer.service.LocationService;
+import com.booksharer.util.MyApplication;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,14 +58,45 @@ public class MainActivity extends AppCompatActivity {
         if (!permissionList.isEmpty()) {
             String [] permissions = permissionList.toArray(new String[permissionList.size()]);
             ActivityCompat.requestPermissions(this, permissions, 1);
+        }else {
+            Log.d("test","启动定位服务");
+            //启动定位服务
+            Intent startIntent = new Intent(this, LocationService.class);
+            startService(startIntent); // 启动服务
         }
-        Log.d("test","启动定位服务");
-        //启动定位服务
-        Intent startIntent = new Intent(this, LocationService.class);
-        startService(startIntent); // 启动服务
         initView();
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch(requestCode) {
+            // requestCode即所声明的权限获取码，在checkSelfPermission时传入
+            case 1:
+                BAIDU_READ_PHONE_STATE:
+
+                if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // 获取到权限，作相应处理（调用定位SDK应当确保相关权限均被授权，否则可能引起定位失败）
+                    Log.d("test","启动定位服务");
+                    //启动定位服务
+                    Intent startIntent = new Intent(this, LocationService.class);
+                    startService(startIntent); // 启动服务
+
+                } else{
+
+                    // 没有获取到权限，做特殊处理
+                    Toast.makeText(getApplicationContext(),"没有权限,请手动开启定位权限",Toast.LENGTH_SHORT).show();
+
+
+                }
+                break;
+
+            default:
+                break;
+
+        }
+    }
 
     /**
      * 初始化组件
@@ -95,6 +129,10 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.tab_post_icon).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (MyApplication.getUser() == null){
+                    Toast.makeText(MyApplication.getContext(), "注册用户才能创建书圈", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 Intent intent = new Intent(MainActivity.this, AddCommunityActivity.class);
                 startActivity(intent);
             }

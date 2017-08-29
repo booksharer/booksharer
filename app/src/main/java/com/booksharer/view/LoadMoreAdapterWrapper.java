@@ -5,12 +5,25 @@ package com.booksharer.view;
  */
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.booksharer.R;
 import com.booksharer.entity.BookCommunity;
+import com.booksharer.entity.BookCommunityLab;
+import com.booksharer.util.HttpUtil;
+import com.booksharer.util.MyApplication;
+import com.booksharer.util.OkHttpUtil;
+import com.booksharer.util.Utility;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Response;
 
 /**
  * 在这个装饰器中，只做与加载更多相关操作。
@@ -18,7 +31,7 @@ import com.booksharer.entity.BookCommunity;
 public class LoadMoreAdapterWrapper extends BaseAdapter<BookCommunity> {
     private BaseAdapter mAdapter;
     private static final int mPageSize = 5;
-    private int mPagePosition = 0;
+    private int mPagePosition = 1;
     private boolean hasMoreData = true;
     private OnLoad mOnLoad;
 
@@ -55,7 +68,39 @@ public class LoadMoreAdapterWrapper extends BaseAdapter<BookCommunity> {
     private void requestData(int pagePosition, int pageSize) {
         //补全请求地址
 //        String requestUrl = String.format("currentPosition=%s&pageIndex=%d&pageSize=#d", MyApplication.getPosition(), pagePosition, pageSize);
-//
+        if (MyApplication.getPosition() == null){
+            return;
+        }
+        HashMap<String, String> map = new HashMap<>();
+        map.put("currentPosition", MyApplication.getPosition());
+        map.put("pageIndex", String.valueOf(++pagePosition));
+        map.put("pageSize", String.valueOf(pageSize) );
+        Log.d("test", map.toString());
+        MyApplication.setUrl_api("/community/findNear", map);
+        HttpUtil.sendOkHttpRequest(MyApplication.getUrl_api(), new okhttp3.Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseData = response.body().string();
+                Log.d("test", responseData);
+                if (Utility.handleFindNearCommunityResponse(responseData)) {
+                    List<BookCommunity> bookCommunities =  BookCommunityLab.get(MyApplication.getContext()).getBookCommunities();
+                    for ( BookCommunity bookCommunity:
+                            bookCommunities) {
+                        final String logo = bookCommunity.getCommunityLogo();
+                        OkHttpUtil.downloadImage(logo);
+                    }
+
+                } else {
+                    Log.d("NetWork","网络故障");
+//                        Toast.makeText(view.getContext(), "网络故障", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 //        MyApplication.setUrl_api("/community/findNear?" + requestUrl);
 //        HttpUtil.sendOkHttpRequest(MyApplication.getUrl_api(), new okhttp3.Callback() {
 //            @Override

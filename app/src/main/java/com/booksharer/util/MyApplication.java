@@ -3,6 +3,7 @@ package com.booksharer.util;
 import android.app.Application;
 import android.content.Context;
 
+import com.booksharer.entity.BookCommunity;
 import com.booksharer.entity.User;
 import com.booksharer.entity.UserBook;
 
@@ -22,7 +23,15 @@ public class MyApplication extends Application{
     private static String area = "定位失败";
 
     private static LinkedList<UserBook> userBooks = new LinkedList<UserBook>();
+    private static BookCommunity bookCommunity;
 
+    public static BookCommunity getBookCommunity() {
+        return bookCommunity;
+    }
+
+    public static void setBookCommunity(BookCommunity bookCommunity) {
+        MyApplication.bookCommunity = bookCommunity;
+    }
 
     @Override
     public void onCreate() {

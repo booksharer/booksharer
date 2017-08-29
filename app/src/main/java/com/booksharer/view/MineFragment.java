@@ -52,11 +52,11 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     private static final int RESULT_OK = -1;
 
     //拍照
-    public static final int TAKE_PHOTO=1;
+    public static final int TAKE_PHOTO = 1;
     private ImageView picture;
     private Uri imageUri;
 
-    public static final int CHOOSE_PHORO=2;
+    public static final int CHOOSE_PHORO = 2;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -66,19 +66,22 @@ public class MineFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("test", requestCode+"");
         switch (requestCode){
             case TAKE_PHOTO:
+                Log.d("test", requestCode+"");
                 if(resultCode == RESULT_OK){
                     try {
                         //将拍摄的照片显示出来
-                        Bitmap bitmap = BitmapFactory.decodeStream(getContext().getContentResolver().openInputStream(imageUri));
+                        Bitmap bitmap = BitmapFactory.decodeStream(getContext(). getContentResolver().openInputStream(imageUri));
                         picture.setImageBitmap(bitmap);
                     }catch (FileNotFoundException e){
                         e.printStackTrace();
                     }
                 }
+                break;
             case CHOOSE_PHORO:
-                if (requestCode == RESULT_OK){
+                if (resultCode == RESULT_OK){
                     if (Build.VERSION.SDK_INT >=19){
                         //4.4以上系统使用这个方法处理照片
                         handleImageOnKitKat(data);
