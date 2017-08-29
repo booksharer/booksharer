@@ -35,14 +35,14 @@ public class OkHttpUtil {
     private static final String TAG = "OkHttpUtil";
 
     public static void downloadImage(final String logo){
-        String logo_url = "/sdcard/shuquan/"+logo;
+        String logo_url = "/sdcard/shuquan/"+logo.split("\\.")[0]+".jpg";
         final File file = new File(logo_url);
         if (!file.exists()){
             Log.d("test","下载"+logo_url);
             HashMap<String, String> map = new HashMap<>();
             map.put("fileName",logo);
-            MyApplication.setUrl_api("community/download",map);
-            HttpUtil.sendOkHttpRequest(MyApplication.getUrl_api(),new Callback(){
+            MyApplication.setUrl_api("/community/download",map);
+            HttpUtil.sendOkHttpRequest(MyApplication.getUrl_api(), new Callback(){
                 @Override
                 public void onFailure(Call call, IOException e) {
 
@@ -73,7 +73,7 @@ public class OkHttpUtil {
 
     public static void sendMultipartBook(String path, final BookInfo mBook, final String mBookNum){
         final File file = new File(path);
-        MyApplication.setUrl_api("book/add");
+        MyApplication.setUrl_api("/book/add");
         OkHttpClient mOkHttpClient = new OkHttpClient();
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
@@ -134,7 +134,7 @@ public class OkHttpUtil {
 
 
     public static void sendMultipartUserBook(UserBook ub) {
-        MyApplication.setUrl_api("userBook/add");
+        MyApplication.setUrl_api("/userBook/add");
         OkHttpClient mOkHttpClient = new OkHttpClient();
         RequestBody requestbody = new FormBody.Builder()
                 .add("userId", ub.getUserId())
@@ -177,17 +177,18 @@ public class OkHttpUtil {
     }
 
     public static void sendMultipartBookCommunity(final BookCommunity bookCommunity) {
-        MyApplication.setUrl_api("community/add");
+        MyApplication.setUrl_api("/community/add");
         OkHttpClient mOkHttpClient = new OkHttpClient();
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("communityName", bookCommunity.getCommunityName())
-                .addFormDataPart("image", bookCommunity.getCommunityLogo(),
+                .addFormDataPart("image", RandomUtil.getRandomFileName()+".jpg",
                         RequestBody.create(MEDIA_TYPE_PNG,  new File(bookCommunity.getCommunityLogo())))
                 .addFormDataPart("communityDesc",bookCommunity.getCommunityDesc())
                 .addFormDataPart("communityPosition",bookCommunity.getCommunityPosition())
                 .addFormDataPart("communityCreatorId",bookCommunity.getCommunityCreatorId().toString())
                 .build();
+        Log.d("test", MyApplication.getUrl_api());
         Request request = new Request.Builder()
                 .header("Authorization", "Client-ID " + "...")
                 .url(MyApplication.getUrl_api())
@@ -203,7 +204,7 @@ public class OkHttpUtil {
             public void onResponse(Call call, Response response) throws IOException {
 //                Log.d(TAG, response.body().string());
                 try {
-                    Log.d("test",response.toString());
+                    Log.d("test",response.body().toString());
                     JSONObject jsonObject = new JSONObject(response.body().string());
                     if (jsonObject.getInt("state") == 0) {
                         JSONObject data = new JSONObject(jsonObject.getString("data"));

@@ -29,23 +29,13 @@ import android.widget.Toast;
 
 import com.booksharer.R;
 import com.booksharer.entity.BookCommunity;
-import com.booksharer.util.HttpUtil;
 import com.booksharer.util.MyApplication;
 import com.booksharer.util.OkHttpUtil;
-import com.booksharer.util.RandomUtil;
-import com.booksharer.util.Utility;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
-import okhttp3.Call;
-import okhttp3.Response;
-
-public class AddCommunityActivity extends AppCompatActivity implements View.OnClickListener {
+public class AddCommunityActivity extends AppCompatActivity {
     // UI references.
     private Button takePhoto;
     private Button choosePhotoFromAlbum;
@@ -63,8 +53,7 @@ public class AddCommunityActivity extends AppCompatActivity implements View.OnCl
 
     private static final int RESULT_OK = -1;
     public static final int CHOOSE_PHORO=2;
-    private File outputImage;
-    private String newfile;
+    private String path;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,19 +79,18 @@ public class AddCommunityActivity extends AppCompatActivity implements View.OnCl
                 mCommunityName = (EditText) findViewById(R.id.community_name);
                 mCommunityDesc = (EditText) findViewById(R.id.community_desc);
                 mCommunityOwnerName = (TextView) findViewById(R.id.community_owner_name);
-                mCommunityOwnerName.setText("somebody");
                 mCommunityOwnerName.setText(MyApplication.getUser().getUserName());
                 mCommunityPosition = (TextView) findViewById(R.id.community_position);
                 mCommunityPosition.setText(MyApplication.getArea());
                 takePhoto = (Button)findViewById(R.id.add_community_take_photo);
                 choosePhotoFromAlbum = (Button)findViewById(R.id.add_community_choose_photo_from_album);
                 picture = (ImageView)findViewById(R.id.community_choose_photo);
+
                 takePhoto.setOnClickListener(new OnClickListener(){
                     @Override
                     public void onClick(View v){
                         //创建File对象，用于存储拍照后的照片
-                        newfile = RandomUtil.getRandomFileName();
-                        outputImage = new File("/sdcard/shuquan/"+newfile+".jpg");
+                        File outputImage = new File(Environment.getExternalStorageDirectory(), "output_image.jpg");
                         try{
                             if (outputImage.exists()){
                                 outputImage.delete();
@@ -111,14 +99,14 @@ public class AddCommunityActivity extends AppCompatActivity implements View.OnCl
                         }catch (IOException e){
                             e.printStackTrace();
                         }
-                        if (Build.VERSION.SDK_INT>=24){
-                            imageUri = FileProvider.getUriForFile(AddCommunityActivity.this,"com.booksharer.camera.fileprovider",outputImage);
+                        if (Build.VERSION.SDK_INT >= 24){
+                            imageUri = FileProvider.getUriForFile(AddCommunityActivity.this,"com.booksharer.camera.fileprovider", outputImage);
                         }else{
                             imageUri = Uri.fromFile(outputImage);
                         }
                         //启动相机程序
                         Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-                        intent.putExtra(MediaStore.EXTRA_OUTPUT,imageUri);
+                        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
                         startActivityForResult(intent,TAKE_PHOTO);
                     }
                 });
@@ -143,28 +131,30 @@ public class AddCommunityActivity extends AppCompatActivity implements View.OnCl
         bookCommunity.setCommunityName(mCommunityName.getText().toString());
         bookCommunity.setCommunityDesc(mCommunityDesc.getText().toString());
         bookCommunity.setCommunityPosition(MyApplication.getPosition());
-        bookCommunity.setCommunityLogo("/sdcard/shuquan/"+newfile+".jpg");
-
+        if (path == null){
+            path = "/storage/emulated/0/output_image.jpg";
+        }
+        Log.d("test", path);
+        bookCommunity.setCommunityLogo(path);
         OkHttpUtil.sendMultipartBookCommunity(bookCommunity);
 
+//        Intent intent = new Intent(AddCommunityActivity.this, BookCommunityActivity.class);
+//        startActivity(intent);
+//        finish();
     }
 
     private void openAlbum(){
         Intent intent = new Intent("android.intent.action.GET_CONTENT");
         intent.setType("image/*");
-        startActivityForResult(intent,CHOOSE_PHORO);
+        startActivityForResult(intent, CHOOSE_PHORO);
     }
 
     @Override
-    public void onClick(View v) {
-
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode){
             case TAKE_PHOTO:
                 if(resultCode == RESULT_OK){
+                    Log.d("test",imageUri.toString());
                     try {
                         //将拍摄的照片显示出来
                         Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
@@ -173,6 +163,7 @@ public class AddCommunityActivity extends AppCompatActivity implements View.OnCl
                         e.printStackTrace();
                     }
                 }
+                break;
             case CHOOSE_PHORO:
                 if (resultCode == RESULT_OK){
                     if (Build.VERSION.SDK_INT >=19){
@@ -188,6 +179,7 @@ public class AddCommunityActivity extends AppCompatActivity implements View.OnCl
                 break;
         }
     }
+
     @TargetApi(19)
     private void handleImageOnKitKat(Intent data){
         String imagePath=null;
@@ -220,7 +212,6 @@ public class AddCommunityActivity extends AppCompatActivity implements View.OnCl
         displayImage(imagePath);
     }
     private String getImagePath(Uri uri,String selection){
-        String path = null;
         //通过Uri和selection来获取真实的图片路径
         Cursor cursor = getContentResolver().query(uri,null,selection,null,null);
         if (cursor != null){

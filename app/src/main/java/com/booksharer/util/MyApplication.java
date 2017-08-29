@@ -3,6 +3,7 @@ package com.booksharer.util;
 import android.app.Application;
 import android.content.Context;
 
+import com.booksharer.entity.BookCommunity;
 import com.booksharer.entity.User;
 import com.booksharer.entity.UserBook;
 
@@ -15,14 +16,22 @@ import java.util.Map;
  */
 public class MyApplication extends Application{
     private static Context context;
-    private final static String url = "http://182.92.176.143:8888/bookshare/";
+    private final static String url = "http://182.92.176.143:8888/bookshare";
     private static String url_api;
     private static User user;
     private static String position;
     private static String area = "定位失败";
 
     private static LinkedList<UserBook> userBooks = new LinkedList<UserBook>();
+    private static BookCommunity bookCommunity;
 
+    public static BookCommunity getBookCommunity() {
+        return bookCommunity;
+    }
+
+    public static void setBookCommunity(BookCommunity bookCommunity) {
+        MyApplication.bookCommunity = bookCommunity;
+    }
 
     @Override
     public void onCreate() {

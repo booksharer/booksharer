@@ -4,9 +4,6 @@ import java.util.Random;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * Created by 吴疆的米本 on 2017/8/28.
- */
 
 public class RandomUtil {
 

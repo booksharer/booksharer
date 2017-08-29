@@ -362,7 +362,7 @@ public class HomeFragment extends Fragment {
             map.put("currentPosition", MyApplication.getPosition());
             map.put("pageIndex", "1");
             map.put("pageSize", "5");
-            MyApplication.setUrl_api("community/findNear", map);
+            MyApplication.setUrl_api("/community/findNear", map);
             HttpUtil.sendOkHttpRequest(MyApplication.getUrl_api(), new okhttp3.Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {

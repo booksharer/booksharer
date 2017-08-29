@@ -61,7 +61,10 @@ public class HomeAdapter extends BaseAdapter<BookCommunity> {
         public void bindBookCommunity(BookCommunity community) {
             communityName.setText(community.getCommunityName());
             OkHttpUtil.downloadImage(community.getCommunityLogo());
-            Bitmap bm = BitmapFactory.decodeFile("/sdcard/shuquan/"+community.getCommunityLogo());
+            BitmapFactory.Options opts = new BitmapFactory.Options();
+// 缩放的比例，缩放是很难按准备的比例进行缩放的，其值表明缩放的倍数，SDK中建议其值是2的指数值,值越大会导致图片不清晰
+            opts.inSampleSize = 8;
+            Bitmap bm = BitmapFactory.decodeFile("/sdcard/shuquan/"+community.getCommunityLogo().split("\\.")[0]+".jpg", opts);
             communityLogo.setImageBitmap(bm);
             communityPeopleNum.setText(String.format(Locale.CHINA,"%d",community.getCommunityPeopleNum()));
         }

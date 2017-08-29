@@ -20,6 +20,7 @@
             android:layout_height="wrap_content">
             <TextView
                 style="@style/Font20"
+                android:id="@+id/community_logo_path"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
