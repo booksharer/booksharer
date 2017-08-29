@@ -6,6 +6,8 @@ import android.widget.Toast;
 
 import com.booksharer.entity.BookCommunity;
 import com.booksharer.entity.BookCommunityLab;
+import com.booksharer.entity.BookInfo;
+import com.booksharer.entity.BookInfoLab;
 import com.booksharer.entity.User;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -117,8 +119,11 @@ public class Utility {
                 JSONObject jsonObject = new JSONObject(response);
                 if (jsonObject.getInt("state") == 0) {
                     //TODO
-                    Log.d(TAG, String.valueOf(jsonObject.getJSONArray("data")));
-                    jsonObject.getJSONArray("data");//data返回查找书本数组
+//                    Log.d(TAG, String.valueOf(jsonObject.getJSONArray("data")));
+                    Gson gson = new Gson();
+                    List<BookInfo> bookResults = gson.fromJson(jsonObject.getJSONArray("data").toString(), new TypeToken<List<BookInfo>>(){}.getType());
+                    BookInfoLab.get(MyApplication.getContext()).setmBookResults(bookResults);
+                    Log.d(TAG,bookResults.toString());
                     return true;
                 } else
                     Log.d(TAG,jsonObject.getString("desc"));

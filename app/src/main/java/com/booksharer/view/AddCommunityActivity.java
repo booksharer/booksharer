@@ -133,7 +133,7 @@ public class AddCommunityActivity extends AppCompatActivity {
         //TODO
         //map.put("communityCreatorId",MyApplication.getUser().getId().toString());
         map.put("communityCreatorId","1");
-        MyApplication.setUrl_api("community/add");
+        MyApplication.setUrl_api("/community/add");
         List<File> fileList = new ArrayList<>();
         fileList.add(outputImage);
         HttpUtil.sendOkHttpPostMultipart(MyApplication.getUrl_api(), map, "communityLogo", fileList, new okhttp3.Callback() {

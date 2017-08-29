@@ -55,7 +55,7 @@ public class FindBookResultAdapter extends BaseAdapter<BookInfo> {
             mBookName = (TextView) itemView.findViewById(R.id.book_name);
             mBookAuthor = (TextView) itemView.findViewById(R.id.author_name);
             mBookPublisher = (TextView) itemView.findViewById(R.id.publisher);
-//            mBookPic = (ImageView) itemView.findViewById(R.id.book_pic);
+            mBookPic = (ImageView) itemView.findViewById(R.id.book_pic);
 
         }
 
@@ -68,6 +68,9 @@ public class FindBookResultAdapter extends BaseAdapter<BookInfo> {
             mBookName.setText(book.getBookName());
             mBookAuthor.setText(book.getAuthor());
             mBookPublisher.setText(book.getPublisher());
+//            OkHttpUtil.downloadBookImage(book.getBookPic());
+//            Bitmap bm = BitmapFactory.decodeFile("/sdcard/shuquan/"+book.getBookPic());
+//            mBookPic.setImageBitmap(bm);
         }
     }
 }

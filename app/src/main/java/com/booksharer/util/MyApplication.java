@@ -15,7 +15,7 @@ import java.util.Map;
  */
 public class MyApplication extends Application{
     private static Context context;
-    private final static String url = "http://182.92.176.143:8888/bookshare/";
+    private final static String url = "http://182.92.176.143:8888/bookshare";
     private static String url_api;
     private static User user;
     private static String position;
