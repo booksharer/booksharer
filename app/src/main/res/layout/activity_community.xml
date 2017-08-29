@@ -80,5 +80,5 @@
         android:text="发布我的书"
         android:textStyle="bold"/>
 
-
+    <include layout="@layout/activity_community_content"/>
 </LinearLayout>

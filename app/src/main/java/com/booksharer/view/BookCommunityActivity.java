@@ -93,7 +93,7 @@ public class BookCommunityActivity extends AppCompatActivity implements View.OnC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_community);
+        setContentView(R.layout.activity_community);
         initView();
     }
 

@@ -212,7 +212,9 @@ public class Utility {
                 if (jsonObject.getInt("state") == 0) {
                     Gson gson = new Gson();
                     List<BookCommunity> bookCommunities = gson.fromJson(jsonObject.getJSONArray("data").toString(), new TypeToken<List<BookCommunity>>(){}.getType());
-                    BookCommunityLab.get(MyApplication.getContext()).appendBookCommunities(bookCommunities);
+                    if (bookCommunities.size() == 0)return false;
+                    MyApplication.setBookCommunities(bookCommunities);
+//                    BookCommunityLab.get(MyApplication.getContext()).appendBookCommunities(bookCommunities);
                     return true;
                 } else
                     Toast.makeText(MyApplication.getContext(), jsonObject.getString("desc"), Toast.LENGTH_SHORT).show();

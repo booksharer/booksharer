@@ -73,6 +73,13 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        Log.d("test","resume");
+        super.onResume();
+        updateUI();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.d("test","HomeFragment");
@@ -124,12 +131,12 @@ public class HomeFragment extends Fragment {
             mHomeAdapter = new HomeAdapter(getActivity());
             mAdapter = new LoadMoreAdapterWrapper(mHomeAdapter, new OnLoad() {
                 @Override
-                public void load(int pagePosition, int pageSize, final ILoadCallback callback) {
+                public void load(int pagePosition, final int pageSize, final ILoadCallback callback) {
                     //此处模拟做网络操作，2s延迟，将拉取的数据更新到adpter中
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            loadCount = 3;
+                            loadCount = pageSize;
 //                            Log.d("test", "触发");
 //                            List<BookCommunity> mBookCommunities = new ArrayList<>();
 //                            for (int i = 0; i < 3; i++) {
@@ -142,11 +149,12 @@ public class HomeFragment extends Fragment {
 //                            }
 //                            bookCommunityLab.appendBookCommunities(mBookCommunities);
                             final List<BookCommunity> bookCommunities = bookCommunityLab.getBookCommunities();
+                            Log.d("test", bookCommunities.size()+"");
                             //数据的处理最终还是交给被装饰的adapter来处理
                             mHomeAdapter.updateData(bookCommunities);
                             callback.onSuccess();
                             //模拟加载到没有更多数据的情况，触发onFailure
-                            if (loadCount++ == 3) {
+                            if (loadCount++ == pageSize) {
                                 callback.onFailure();
                             }
                         }
@@ -157,6 +165,7 @@ public class HomeFragment extends Fragment {
         } else {
             Log.d("test", "此时数据为\n"+bookCommunityLab.toString());
             mAdapter.updateData(bookCommunityLab.getBookCommunities());
+            mAdapter.notifyDataSetChanged();
         }
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
@@ -174,7 +183,7 @@ public class HomeFragment extends Fragment {
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
 
         //根据屏幕信息设置ViewPager广告容器的宽高      原高度dm.heightPixels * 2 / 5
-        adViewPager.setLayoutParams(new LayoutParams(dm.widthPixels/2, dm.widthPixels * 2 / 3));
+        adViewPager.setLayoutParams(new LayoutParams(dm.widthPixels, dm.widthPixels *  9/ 16));
 
         //将ViewPager容器设置到布局文件父容器中
         pagerLayout.addView(adViewPager);
@@ -227,15 +236,15 @@ public class HomeFragment extends Fragment {
         pageViews = new ArrayList<>();
 
         ImageView img1 = new ImageView(getActivity());
-        img1.setBackgroundResource(R.drawable.aa);
+        img1.setBackgroundResource(R.drawable.ad1);
         pageViews.add(img1);
 
         ImageView img2 = new ImageView(getActivity());
-        img2.setBackgroundResource(R.drawable.bb);
+        img2.setBackgroundResource(R.drawable.ad2);
         pageViews.add(img2);
 
         ImageView img3 = new ImageView(getContext());
-        img3.setBackgroundResource(R.drawable.cc);
+        img3.setBackgroundResource(R.drawable.ad3);
         pageViews.add(img3);
 
         adapter = new AdPageAdapter(pageViews);
@@ -358,42 +367,43 @@ public class HomeFragment extends Fragment {
             Log.d("test", "收到定位广播");
             TextView city = (TextView) view.findViewById(R.id.city);
             city.setText(MyApplication.getArea());
-            HashMap<String, String> map = new HashMap<>();
-            map.put("currentPosition", MyApplication.getPosition());
-            map.put("pageIndex", "1");
-            map.put("pageSize", "5");
-            MyApplication.setUrl_api("/community/findNear", map);
-            HttpUtil.sendOkHttpRequest(MyApplication.getUrl_api(), new okhttp3.Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-
-                }
-
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    String responseData = response.body().string();
-                    Log.d("test", responseData);
-                    if (Utility.handleFindNearCommunityResponse(responseData)) {
-                        List<BookCommunity> bookCommunities =  BookCommunityLab.get(MyApplication.getContext()).getBookCommunities();
-                        for ( BookCommunity bookCommunity:
-                             bookCommunities) {
-                            final String logo = bookCommunity.getCommunityLogo();
-                            OkHttpUtil.downloadImage(logo);
-                        }
-                        //显示
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                updateUI();
-                            }
-                        });
-
-                    } else {
-                        Log.d("NetWork","网络故障");
-//                        Toast.makeText(view.getContext(), "网络故障", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
+            updateUI();
+//            HashMap<String, String> map = new HashMap<>();
+//            map.put("currentPosition", MyApplication.getPosition());
+//            map.put("pageIndex", "1");
+//            map.put("pageSize", "5");
+//            MyApplication.setUrl_api("/community/findNear", map);
+//            HttpUtil.sendOkHttpRequest(MyApplication.getUrl_api(), new okhttp3.Callback() {
+//                @Override
+//                public void onFailure(Call call, IOException e) {
+//
+//                }
+//
+//                @Override
+//                public void onResponse(Call call, Response response) throws IOException {
+//                    String responseData = response.body().string();
+//                    Log.d("test", responseData);
+//                    if (Utility.handleFindNearCommunityResponse(responseData)) {
+//                        List<BookCommunity> bookCommunities =  BookCommunityLab.get(MyApplication.getContext()).getBookCommunities();
+//                        for ( BookCommunity bookCommunity:
+//                             bookCommunities) {
+//                            final String logo = bookCommunity.getCommunityLogo();
+//                            OkHttpUtil.downloadImage(logo);
+//                        }
+//                        //显示
+//                        getActivity().runOnUiThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                updateUI();
+//                            }
+//                        });
+//
+//                    } else {
+//                        Log.d("NetWork","网络故障");
+////                        Toast.makeText(view.getContext(), "网络故障", Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+//            });
         }
     }
 }

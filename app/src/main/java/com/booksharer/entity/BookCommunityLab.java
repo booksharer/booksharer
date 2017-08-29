@@ -63,4 +63,9 @@ public class BookCommunityLab {
         sBookCommunityLab = null;
     }
 
+    public int getCapacity() {
+        return mBookCommunities.size();
+    }
+
+
 }

@@ -31,8 +31,8 @@ import okhttp3.Response;
 public class LoadMoreAdapterWrapper extends BaseAdapter<BookCommunity> {
     private BaseAdapter mAdapter;
     private static final int mPageSize = 5;
-    private int mPagePosition = 1;
-    private boolean hasMoreData = true;
+    private int mPagePosition = 0;
+    private static boolean hasMoreData = true;
     private OnLoad mOnLoad;
 
 
@@ -65,15 +65,19 @@ public class LoadMoreAdapterWrapper extends BaseAdapter<BookCommunity> {
         }
     }
 
-    private void requestData(int pagePosition, int pageSize) {
+    private void requestData(int pagePosition, final int pageSize) {
+        Log.d("test", "加载页");
         //补全请求地址
 //        String requestUrl = String.format("currentPosition=%s&pageIndex=%d&pageSize=#d", MyApplication.getPosition(), pagePosition, pageSize);
         if (MyApplication.getPosition() == null){
             return;
         }
+        Log.d("test", "现在有数据"+BookCommunityLab.get(MyApplication.getContext()).getCapacity() );
+        Log.d("pagePosition",BookCommunityLab.get(MyApplication.getContext()).getCapacity() +" "+pagePosition );
         HashMap<String, String> map = new HashMap<>();
         map.put("currentPosition", MyApplication.getPosition());
-        map.put("pageIndex", String.valueOf(++pagePosition));
+        int pageIndex = BookCommunityLab.get(MyApplication.getContext()).getCapacity()/pageSize + 1;
+        map.put("pageIndex", String.valueOf(pageIndex));
         map.put("pageSize", String.valueOf(pageSize) );
         Log.d("test", map.toString());
         MyApplication.setUrl_api("/community/findNear", map);
@@ -88,37 +92,22 @@ public class LoadMoreAdapterWrapper extends BaseAdapter<BookCommunity> {
                 String responseData = response.body().string();
                 Log.d("test", responseData);
                 if (Utility.handleFindNearCommunityResponse(responseData)) {
-                    List<BookCommunity> bookCommunities =  BookCommunityLab.get(MyApplication.getContext()).getBookCommunities();
+//                    List<BookCommunity> bookCommunities =  BookCommunityLab.get(MyApplication.getContext()).getBookCommunities();
+                    List<BookCommunity> bookCommunities =  MyApplication.getBookCommunities();
                     for ( BookCommunity bookCommunity:
                             bookCommunities) {
                         final String logo = bookCommunity.getCommunityLogo();
                         OkHttpUtil.downloadImage(logo);
+                        if (bookCommunities.size() < pageSize)hasMoreData = false;
+                        else hasMoreData = true;
                     }
-
                 } else {
+                    hasMoreData = false;
                     Log.d("NetWork","网络故障");
 //                        Toast.makeText(view.getContext(), "网络故障", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-//        MyApplication.setUrl_api("/community/findNear?" + requestUrl);
-//        HttpUtil.sendOkHttpRequest(MyApplication.getUrl_api(), new okhttp3.Callback() {
-//            @Override
-//            public void onFailure(Call call, IOException e) {
-//            }
-//
-//            @Override
-//            public void onResponse(Call call, Response response) throws IOException {
-//                String responseData = response.body().string();
-//                if (Utility.handleFindNearCommunityResponse(responseData)) {
-//                   notifyDataSetChanged();
-//                    mPagePosition = mPagePosition + 1;
-//                    hasMoreData = true;
-//                }else {
-//                    hasMoreData = false;
-//                }
-//            }
-//        });
 
         //网络请求,如果是异步请求，则在成功之后的回调中添加数据，并且调用notifyDataSetChanged方法，hasMoreData为true
 //        如果没有数据了，则hasMoreData为false，然后通知变化，更新recylerview
@@ -127,14 +116,17 @@ public class LoadMoreAdapterWrapper extends BaseAdapter<BookCommunity> {
             mOnLoad.load(pagePosition, pageSize, new ILoadCallback() {
                 @Override
                 public void onSuccess() {
+                    Log.d("test","添加数据");
+                    BookCommunityLab.get(MyApplication.getContext()).appendBookCommunities(MyApplication.getBookCommunities());
                     notifyDataSetChanged();
                     mPagePosition = (mPagePosition + 1) * mPageSize;
-                    hasMoreData = true;
+                    Log.d("添加后", String.valueOf(hasMoreData));
                 }
 
                 @Override
                 public void onFailure() {
-                    hasMoreData = false;
+                    Log.d("添加后", "什么情况");
+//                    hasMoreData = false;
                 }
             });
         }
@@ -142,7 +134,9 @@ public class LoadMoreAdapterWrapper extends BaseAdapter<BookCommunity> {
 
     @Override
     public int getItemViewType(int position) {
+        Log.d("test position getItem", position +" "+getItemCount());
         if (position == getItemCount() - 1) {
+            Log.d("test", String.valueOf(hasMoreData));
             if (hasMoreData) {
                 return R.layout.list_item_loading;
             } else {

@@ -7,8 +7,10 @@ import com.booksharer.entity.BookCommunity;
 import com.booksharer.entity.User;
 import com.booksharer.entity.UserBook;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,7 +24,17 @@ public class MyApplication extends Application{
     private static String position;
     private static String area = "定位失败";
 
-    private static LinkedList<UserBook> userBooks = new LinkedList<UserBook>();
+    private static LinkedList<UserBook> userBooks = new LinkedList<>();
+    private static List<BookCommunity> bookCommunities = new ArrayList<>();
+
+    public static List<BookCommunity> getBookCommunities() {
+        return bookCommunities;
+    }
+
+    public static void setBookCommunities(List<BookCommunity> bookCommunities) {
+        MyApplication.bookCommunities = bookCommunities;
+    }
+
     private static BookCommunity bookCommunity;
 
     public static BookCommunity getBookCommunity() {
